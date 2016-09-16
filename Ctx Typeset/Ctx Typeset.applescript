@@ -100,6 +100,12 @@ property pdfViewerLaunch : true
 
 ----------------------------------------------------------------------------------
 
+## SyncTex
+
+property syncTex : false
+
+----------------------------------------------------------------------------------
+
 ## RUN MODE
 
 # Choose if you want to run the typesetting command in the standard shell (sh)
