@@ -41,8 +41,10 @@ use scripting additions
 
 # Note: Normally it’s not necessary to set the paths here!
 
-property ctxBeta : "/Users/XXX/ConTeXt/beta/tex/setuptex" -- ConTeXt Beta
-property ctxCurrent : "/Users/XXX/ConTeXt/current/tex/setuptex" -- ConTeXt Current
+--property ctxBeta : "/Users/XXX/ConTeXt/beta/tex/setuptex" -- ConTeXt Beta
+--property ctxCurrent : "/Users/XXX/ConTeXt/current/tex/setuptex" -- ConTeXt Current
+property ctxBeta : "/Users/tom/ConTeXt/beta/tex/setuptex" -- ConTeXt Beta
+property ctxCurrent : "/Users/tom/ConTeXt/current/tex/setuptex" -- ConTeXt Current
 
 # If you have only one ConTeXt directory set both to the same value
 
