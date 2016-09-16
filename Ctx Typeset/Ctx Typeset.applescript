@@ -20,6 +20,8 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
+use framework "Foundation"
+use scripting additions
 
 
 
@@ -265,7 +267,7 @@ set descrFile to ("/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Type
 
 -- Misc
 
-global fileName, fileNameHead, fileNameTail, fileNameRoot, parentFolder, isFromFinder, isFromBBEdit, targetApp, currentEditorFile, showList, dirNameCtx, bakName, ctxVersiondate, makeNewBak, cSourceCtx, tsModeSwap, previousApp
+global fileName, fileNameHead, fileNameTail, fileNameRoot, parentFolder, isFromFinder, isFromBBEdit, targetApp, currentEditorFile, showList, dirNameCtx, bakName, ctxVersiondate, makeNewBak, cSourceCtx, tsModeSwap, previousApp, keyDown
 set currentEditorFile to ""
 set fileName to "" -- if not reset previous fileName will be processed even in case of error
 set isFromFinder to false
@@ -364,32 +366,32 @@ using terms from application "ASObjC Runner-N"
 	-- Modifier keys
 	------------------------------------------------------------------------------
 	
-	tell application asocRunner
-		if (option key down of modifier keys) and (control key down of modifier keys) then -- Lock on product file
-			regPrFile() of me
-			return
-		else if (shift key down of modifier keys) and (option key down of modifier keys) then -- Swap run mode (Terminal vs shell)
-			
-			--if not terminalMode then -- Permanent swapping …
-			--	set terminalMode to true
-			--else
-			--	set terminalMode to false
-			
-			set runModeSwap to true -- … or non-permanent swapping(?)
-		else if (shift key down of modifier keys) then -- Swap auto-launching of pdf viewer
-			set pdfViewerLaunchSwap to true
-		else if (option key down of modifier keys) then -- Swap Product mode (force Finder selection to be typeset)
-			
-			--if not finderOnly then -- Permanent swapping …
-			--	set finderOnly to true
-			--else
-			--	set finderOnly to false
-			
-			set tsModeSwap to true -- … or non-permanent swapping(?)
-		else if (control key down of modifier keys) then
-			set showList to true
-		end if
-	end tell
+	modifierKeyTest()
+	
+	if keyDown's optionDown and keyDown's controlDown then -- Lock on product file
+		regPrFile() of me
+		return
+	else if keyDown's shiftDown and keyDown's optionDown then -- Swap run mode (Terminal vs shell)
+		
+		--if not terminalMode then -- Permanent swapping …
+		--	set terminalMode to true
+		--else
+		--	set terminalMode to false
+		
+		set runModeSwap to true -- … or non-permanent swapping(?)
+	else if keyDown's shiftDown then -- Swap auto-launching of pdf viewer
+		set pdfViewerLaunchSwap to true
+	else if keyDown's optionDown then -- Swap Product mode (force Finder selection to be typeset)
+		
+		--if not finderOnly then -- Permanent swapping …
+		--	set finderOnly to true
+		--else
+		--	set finderOnly to false
+		
+		set tsModeSwap to true -- … or non-permanent swapping(?)
+	else if keyDown's controlDown then
+		set showList to true
+	end if
 	
 	
 	------------------------------------------------------------------------------
@@ -1361,6 +1363,22 @@ Syntax checker says:
 	end refreshSkim
 	
 end using terms from
+
+on modifierKeyTest()
+	set keyDown to {commandDown:false, optionDown:false, controlDown:false, shiftDown:false}
+	
+	set currentModifiers to current application's class "NSEvent"'s modifierFlags()
+	
+	tell keyDown
+		set its optionDown to (currentModifiers div (get current application's NSAlternateKeyMask) mod 2 is 1)
+		set its commandDown to (currentModifiers div (get current application's NSCommandKeyMask) mod 2 is 1)
+		set its shiftDown to (currentModifiers div (get current application's NSShiftKeyMask) mod 2 is 1)
+		set its controlDown to (currentModifiers div (get current application's NSControlKeyMask) mod 2 is 1)
+	end tell
+	
+	return keyDown
+end modifierKeyTest
+
 
 -- Old 7z string:
 -- p7z & " a -txz -si -bd -m0=lzma2 -mx=9 -ms=on -md=28 -mfb=128 -mtm=on -mtc=off -mta=off -mmt=on "
