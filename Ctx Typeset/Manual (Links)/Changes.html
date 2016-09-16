@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>Changes (ConTeXt Typeset Tool)</title>
+</head>
+<body>
+<dl>
+	<dt>1.2.X (XX) (2016-09-XX)</dt>
+	<dd>Dropped compatibility with macOS 10.8 (removed terminal-notifier).
+	<dt>1.2.5 (64) (2016-03-22)</dt>
+	<dd>Notifications now working on El Capitan (10.11).</dd>
+	<dt>1.2.4 (63) (2015-04-10)</dt>
+	<dd>Rewritten parts of the manual.</dd>
+	<dt>1.2.4 (62) (2015-04-09)</dt>
+	<dd>Replaced ASObjC Runner component with a new copy (code signature problem).</dd>
+	<dd>Updated terminal-notifier component to 1.6.3 (this is only used on OS X prior to 10.9).</dd>
+	<dt>1.2.4 (61) (2015-04-09)</dt>
+	<dd>Added the option to enforce SyncTeX via command switch <code>--synctex=zipped</code>. This will work also where <code>\enabledirectives [system.synctex]</code> doesn’t work, for example in standalone tex documents without components or other input files. (See also <a href="http://www.mail-archive.com/ntg-context%40ntg.nl/msg78012.html">this</a>.)</dd>
+	<dd>Changed the “typesetting started”-notification emoji from <code>U+231A U+FE0F</code> to <code>U+2615 U+FE0F</code>. (Thank you, Apple, for having converted the formerly nice Watch emoji into a blemished Apple Watch emoji that resembles a piece of coal in 12pt.)</dd>
+	<dd>For semantic coherence changed the “typesetting finished” emoji from <code>U+1F3C1</code> to <code>U+1F37A</code> ;-)</dd>
+	<dd>Manual: Added note on Auto syntax check in Product Mode.</dd>
+	<dt>1.2.3 (60) (2015-03-29)</dt>
+	<dd>Added update switch <code>--modules=all</code>.</dd>
+	<dd>Removed the update switch <code>--keep</code>.</dd>
+	<dd>When updating ConTeXt <code>first-setup.sh</code> will get updated, too.</dd>
+	<dt>1.2.3 (58) (2015-03-28)</dt>
+	<dd>Added to the GUI (Tools section): Possibility to quickly remap ConTeXt directories to the “Beta”/“Current” slots. This should be useful if you are switching between more than two ConTeXt installations, for example an old Current, an older (but working) Beta and the latest Beta from last night. (Formerly you had to rename the ConTeXt folder on disk in order to force the script to prompt for new locations.)</dd>
+	<dd>Slightly changed wording in main window.</dd>
+	<dd>Updated and extended the manual.</dd>
+	<dt>1.2.2 (56) (2015-03-24)</dt>
+	<dd>Recompiled 7zr.</dd>
+	<dt>1.2.2 (55) (2015-03-23)</dt>
+	<dd>Updated 7zr binary.</dd>
+	<dd>Corrected typo in Version Info dialog.</dd>
+	<dt>1.2.1 (54) (2015-01-18)</dt>
+	<dd>Works again with BBEdit 11 (uses BBEdit’s AS dictionary now).</dd>
+	<dd>Notifications now working with Yosemite (10.1.0).</dd>
+	<dt>1.2.0 (51) (2015-01-16)</dt>
+	<dd>Manual updated (Incompatibility of Terminal mode with zsh shell).</dd>
+	<dt>1.2.0 (50) (2014-05-07)</dt>
+	<dd>Bugs fixed in the BBEdit script (Extra folder).</dd>
+	<dt>1.2.0 (49) (2014-05-07)</dt>
+	<dd>The auxiliary files <em>.synctex.gz, .tuc, .log</em> now automatically get the Time Machine exclusion attribute. (CrashPlan respects this no-backup attribute too.).</dd>
+	<dt>1.2.0 (48) (2014-05-07)</dt>
+	<dd>Improved handling of Skim: If Skim is set as PDF viewer a “revert” command is sent to Skim after typesetting. Thus you should disable “Check file for changes” in Skim’s preferences. This is in accord with the Skim recommendations as of <a href="http://sourceforge.net/p/skim-app/wiki/TeX_and_PDF_Synchronization/#reload-updated-pdf-files">here</a>. (Works only if not typesetting in the Terminal.)</dd>
+	<dd>Included script “Synctex Forward Search for BBEdit” (in Extras).</dd>
+	<dt>1.1.8 (2014-04-10)</dt>
+	<dd>Changed default setting for the exclusion of generated PDF from Time Machine Backup. If you <em>do</em> want your PDF to get backed up you have to select the option “Don’t exclude generated PDF from Backup” now.</dd>
+	<dd>Included an Automator service for easy removal of the no-backup xattr (in Extras).</dd>
+	<dd>Raised delay for modifier keys from 0.4 to 0.6s. It is more comfortable now to launch the script and hit a modifier key shortly afterwards. (You can change the delay in the Settings section in the script if you feel that it slows down the script launch too much.)</dd>
+	<dt>1.1.7 (2014-02-11)</dt>
+	<dd>Changes to the backup system for ConTeXt installations:
+		<ul>
+			<li>OS X’s tar (bsdtar) is now used instead of cpio
+			<li>Significantly faster (but slightly less efficient) compression settings for gz (2) and xz (5)
+		</ul>
+	</dd>
+	<dt>1.1.6 (2014-02-04)</dt>
+	<dd>LuaTeX versions string is now parsed at full length.</dd>
+	<dd>Frontmost process at script launch time (i.e. probably your text editor) is now properly brought back to front …
+		<ul>
+			<li>when the options window is closed
+			<li>before the background execution of the typeset command
+			<li>after registration of a product file via modifier key
+			<li>for all Terminal sessions when ‘Terminal in background’ is selected
+		</ul>
+	</dd>
+	<dd>‘Terminal in background’ properly designated as global option (that is, for typesetting runs and for tools that run in the Terminal).</dd>
+	<dt>1.1.5 (2014-01-29)</dt>
+	<dd>Added LuaJitTeX as option.</dd>
+	<dd>Fixed the search for ‘setuptex’ (‘…/scripts/stubs/setuptex’ will no longer appear in the search results. Only ‘…/tex/setuptex’ is considered a valid setuptex file.</dd>
+	<dd>Updated the notifications for un-/re-registering product files for Mavericks compatibility (native AppleScript notifications).</dd>
+	<dd>Complete overhaul of the main options window; more expressive and coherent symbolization. See manual for details.</dd>
+	<dt>1.1.1 (2014-01-25)</dt>
+	<dd>Introduced a very short execution delay to avoid problems with the recognition of modifier keys.</dd>
+	<dd>Updated the manual and mentioned the possibility to work with a longer launch delay in order to be able to use the modifier keys asynchronously (after script launch).</dd>
+	<dt>1.1.0 (2013-12-16)</dt>
+	<dd>Added feature: Exclude generated PDF from Time Machine backup.</dd>
+	<dd>Updated manual.</dd>
+	<dt>1.0.3 (2013-11-14)</dt>
+	<dd>Manual is again accessible from “Help” in the main options window.</dd>
+	<dt>1.0.2 (2013-11-14)</dt>
+	<dd>If in Product Mode all purging tools (tex, PDF) now target the product file’s directory.</dd>
+	<dt>1.0.1 (2013-11-13)</dt>
+	<dd>Removed problems with some tools not working properly.</dd>
+	<dt>1.0.0 (2013-10-25)</dt>
+	<dd><em>Rewrite of the notification system</em>: Script will now detect on which system version it is running. On Mavericks the new AppleScript access to notifications will be used (‘display notification’); on Mountain Lion the tool ‘terminal notifier’ will be used (as before); on older systems notification commands will be entirely disabled.</dd>
+	<dd>Typeset error sound now changes randomly.</dd>
+	<dd>Fixed run counter, so that the message with the shortcut hints will pop up again. (After 1st complete run and one more time later.)</dd>
+	<dd>Manual updated.</dd>
+	<dt>0.9.9 (2013-10-24)</dt>
+	<dd>Selection of Ctx Current is now remembered again.</dd>
+	<dd>Current problem with OS 10.9: Notifications from terminal notifier don’t show up. I will re-write the script to make use of the new “display notification” AppleScript command.</dd>
+</dl>
+</body>
+</html>

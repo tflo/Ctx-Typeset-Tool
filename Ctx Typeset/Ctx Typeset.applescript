@@ -174,8 +174,7 @@ property terminalWinForeground : true
 ## NOTIFICATIONS ON/OFF
 
 # Set this to "false" if … 
-# – OS < 10.8
-# – The helper app (terminal-notifier) doesn’t work on your system for any reason
+# – OS < 10.9
 
 property enableNotifications : true
 
@@ -257,9 +256,6 @@ property bakComprLevel : 2
 property asocRunner : ""
 --set asocRunner to (path to resource "bin/ASObjC Runner-N.app") as text
 set asocRunner to ("/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Typeset/Ctx Typeset.scptd/Contents/Resources/bin/ASObjC Runner-N.app") as text
-property terminalNotifier : ""
---set terminalNotifier to (quoted form of POSIX path of (path to resource "bin/terminal-notifier.app/Contents/MacOS/terminal-notifier")) as text
-set terminalNotifier to (quoted form of POSIX path of ("/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Typeset/Ctx Typeset.scptd/Contents/Resources/bin/terminal-notifier.app")) as text
 property p7z : ""
 --set p7z to (quoted form of POSIX path of (path to resource "bin/7zr")) as text
 set p7z to (quoted form of POSIX path of ("/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Typeset/Ctx Typeset.scptd/Contents/Resources/bin/7zr")) as text
@@ -269,7 +265,7 @@ set descrFile to ("/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Type
 
 -- Misc
 
-global fileName, fileNameHead, fileNameTail, fileNameRoot, parentFolder, isFromFinder, isFromBBEdit, targetApp, currentEditorFile, showList, dirNameCtx, bakName, ctxVersiondate, makeNewBak, MVnotifications, MLnotifications, cSourceCtx, tsModeSwap, previousApp
+global fileName, fileNameHead, fileNameTail, fileNameRoot, parentFolder, isFromFinder, isFromBBEdit, targetApp, currentEditorFile, showList, dirNameCtx, bakName, ctxVersiondate, makeNewBak, cSourceCtx, tsModeSwap, previousApp
 set currentEditorFile to ""
 set fileName to "" -- if not reset previous fileName will be processed even in case of error
 set isFromFinder to false
@@ -352,21 +348,6 @@ set cSourceCtx to "source " & quoted form of myCtx
 property cCtxFormat : "mtxrun --selfupdate ; mtxrun --generate ; context --make cont-en"
 property cListFontsAll : "mtxrun --script fonts --list --all"
 property cFirstsetupUpdate : "rsync -ptv rsync://contextgarden.net/minimals/setup/first-setup.sh ."
-
--- Notifications type
-
-if enableNotifications then
-	tell application "Finder" to set sysVs to version
-	if sysVs begins with "10.11" or sysVs begins with "10.10" or sysVs begins with "10.9" then
-		set {MVnotifications, MLnotifications} to {true, false}
-	else if sysVs begins with "10.8" then --10.8
-		set {MVnotifications, MLnotifications} to {false, true}
-	else
-		set {MVnotifications, MLnotifications} to {false, false}
-	end if
-else
-	set {MVnotifications, MLnotifications} to {false, false}
-end if
 
 
 using terms from application "ASObjC Runner-N"
@@ -682,17 +663,6 @@ using terms from application "ASObjC Runner-N"
 	end if
 	
 	
-	-- URL of log file for terminal-notifier
-	
-	set logFile to fileNameHead & "/" & fileNameRoot & ".log"
-	
-	tell application asocRunner
-		modify string logFile so it is escaped URI
-		set logFileURL to result
-	end tell
-	set logFileURL to "file://" & logFileURL
-	
-	
 	-- Parent item (product folder / component folder in product mode | product file in normal mode)
 	
 	if defactoPrMode and prFile is not "" then
@@ -708,13 +678,7 @@ using terms from application "ASObjC Runner-N"
 	
 	-- Notifications
 	
-	
-	if MLnotifications then
-		set notificationStart to terminalNotifier & " -title '" & showCtx & " | Started ☕️' -subtitle " & quoted form of fileNameTail & " -message '" & parentItem & " | " & showTsMode & "' ; "
-		set notificationEnd to " && " & terminalNotifier & " -title '" & showCtx & " | Completed 🍺' -subtitle " & quoted form of fileNameTail & " -message '" & parentItem & " | " & showTsMode & "' -open '" & logFileURL & "'"
-	else
-		set {notificationStart, notificationEnd} to {"", ""}
-	end if
+	set {notificationStart, notificationEnd} to {"", ""}
 	
 	
 	-- ConTeXt and options
@@ -783,12 +747,12 @@ Syntax checker says:
 	-- Run
 	------------------------------------------------------------------------------
 	
-	if MVnotifications then display notification parentItem & " | " & showTsMode with title showCtx & " | Started ☕️" subtitle quoted form of fileNameTail
+	display notification parentItem & " | " & showTsMode with title showCtx & " | Started ☕️" subtitle quoted form of fileNameTail
 	
 	if (not terminalMode and not runModeSwap) or (terminalMode and runModeSwap) then
 		try
 			do shell script typesetCmd
-			if MVnotifications then display notification parentItem & " | " & showTsMode with title showCtx & " | Completed 🍺" subtitle quoted form of fileNameTail
+			display notification parentItem & " | " & showTsMode with title showCtx & " | Completed 🍺" subtitle quoted form of fileNameTail
 			
 			# Experimental: Proper Skim reload
 			# Disable "Check for file changes" in Skim's prefs
@@ -952,11 +916,7 @@ Syntax checker says:
 			set prFileFolder to name of (about file (containing item of (parsed path prFile) as text))
 			set prevPrFileNameTail to name of (parsed path prevPrFile) as text
 		end tell
-		if MVnotifications then
-			display notification "ƒ " & prFileFolder with title "Product file registered" subtitle prFileNameTail
-		else
-			do shell script terminalNotifier & " -title 'Product file registered' -subtitle '" & prFileNameTail & "' -message 'ƒ " & prFileFolder & "'"
-		end if
+		display notification "ƒ " & prFileFolder with title "Product file registered" subtitle prFileNameTail
 		tell application previousApp to activate
 		return prFile
 	end regPrFile
@@ -968,11 +928,7 @@ Syntax checker says:
 		tell application asocRunner
 			set prevPrFileNameTail to name of (parsed path prevPrFile) as text
 		end tell
-		if MVnotifications then
-			display notification "Previous product file: " & prevPrFileNameTail with title "Product file unregistered" subtitle prFileNameTail
-		else
-			do shell script terminalNotifier & " -title 'Product file unregistered' -message 'Previous product file: " & prevPrFileNameTail & "'"
-		end if
+		display notification "Previous product file: " & prevPrFileNameTail with title "Product file unregistered" subtitle prFileNameTail
 		return
 	end unregPrFile
 	
@@ -986,11 +942,7 @@ Syntax checker says:
 			set prFileFolder to name of (about file (containing item of (parsed path prFile) as text))
 			set prevPrFileNameTail to name of (parsed path prevPrFile) as text
 		end tell
-		if MVnotifications then
-			display notification "ƒ " & prFileFolder with title "Product file re-registered" subtitle prFileNameTail
-		else
-			do shell script terminalNotifier & " -title 'Product file re-registered' -subtitle '" & prFileNameTail & "' -message 'ƒ " & prFileFolder & "'"
-		end if
+		display notification "ƒ " & prFileFolder with title "Product file re-registered" subtitle prFileNameTail
 		return
 	end reregPrFile
 	
@@ -1235,7 +1187,6 @@ Syntax checker says:
 		set reclSize to 0
 		--try
 		tell application asocRunner
-			set fileNameHeadURI to (modify string fileNameHead so it is escaped URI)
 			try
 				set otherPdfs to file path from (modify list (file path from (enumerate folder fileNameHead match extensions "pdf") deleting extension yes) subtracting list (file path from (enumerate folder fileNameHead match extensions "tex") deleting extension yes)) adding extension "pdf"
 			end try
@@ -1262,14 +1213,10 @@ Syntax checker says:
 				end if
 			end try
 		end tell
-		if MVnotifications is true and countDeletedPdfs > 0 then
+		if countDeletedPdfs > 0 then
 			display notification "Kept PDF files: " & countOtherPdfs & " (" & remSize & " MB)" with title "PDF files purged" subtitle "Trashed PDF files: " & countDeletedPdfs & " (" & reclSize & " MB)"
-		else if MLnotifications is true and countDeletedPdfs > 0 then
-			do shell script terminalNotifier & " -title 'PDF files purged' -subtitle 'Trashed PDF files: " & countDeletedPdfs & " (" & reclSize & " MB)' -message 'Kept PDF files: " & countOtherPdfs & " (" & remSize & " MB)' -open file://" & fileNameHeadURI
-		else if MVnotifications is true then
+		else
 			display notification "Kept PDF files: " & countOtherPdfs & " (" & remSize & " MB)" with title "No eligible PDF files found"
-		else if MLnotifications is true then
-			do shell script terminalNotifier & " -title 'No eligible PDF files found' -message 'Kept PDF files: " & countOtherPdfs & " (" & remSize & " MB)' -open file://" & fileNameHeadURI
 		end if
 	end _trashPdf
 	

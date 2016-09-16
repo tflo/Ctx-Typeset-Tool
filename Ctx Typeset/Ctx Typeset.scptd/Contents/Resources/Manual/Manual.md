@@ -650,18 +650,9 @@ typesetting run.
 
 Of course, a ConTeXt Minimal (standalone) is required.[^texlive]
 
-The script has been tested only with OS 10.8, 10.9 and 10.10 (Mountain Lion,
-Mavericks, Yosemite). On previous systems notifications won’t work due to the
-absence of Notification Center. If this interrupts the script please disable
-notifications permanently in the settings section in the script.
-
-On OS X Mountain Lion notifications are sent through a small tool called 
-*terminal-notifier*. If you don’t see notifications make sure that the tool is 
-registered in the Notification Center in *System Preferences / Notification 
-Center*. There you can also finetune the bahavior of the notifications.
-
-From OS X Mavericks on the new AppleScript command ‘display notification’ is
-used (no third-party tools).
+The script is fully compatible with OS 10.9, 10.10 and 10.11 (Mavericks,
+Yosemite, El Capitan). On older systems notifications won’t work and you should
+disable notifications permanently in the settings section in the script.
 
 *Python* must be installed (2 or 3) for file URL parsing.
 
@@ -681,9 +672,6 @@ Thanks to the authors of these tools that are contained in the script bundle:
 - *ASObjC Runner* by Shane Stanley
   (http://www.macosxautomation.com/applescript/apps/runner.html); used for 
   modifier keys, progress bars, file path parsing, file URI parsing, …
-- *terminal-notifier* by Eloy Durán 
-  (https://github.com/alloy/terminal-notifier); used for notifications from 
-  the command line for pre-Mavericks systems.
 - *p7zip* (http://sourceforge.net/projects/p7zip/), originally by Igor Pavlov; 
   used for multithreaded creation of *xz* archive for ConTeXt backup.
 
