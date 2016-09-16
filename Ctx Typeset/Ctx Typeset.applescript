@@ -957,11 +957,12 @@ Syntax checker says:
 		set tmpPrFile to prFile
 		set prFile to prevPrFile
 		set prevPrFile to tmpPrFile
-		tell application asocRunner
-			set prFileNameTail to name of (parsed path prFile) as text
-			set prFileFolder to name of (about file (containing item of (parsed path prFile) as text))
-			set prevPrFileNameTail to name of (parsed path prevPrFile) as text
-		end tell
+		set saveTID to AppleScript's text item delimiters
+		set AppleScript's text item delimiters to {"/"}
+		set prFileNameTail to text item -1 of prFile
+		set prFileFolder to text item -2 of prFile
+		set prevPrFileNameTail to text item -1 of prevPrFile
+		set AppleScript's text item delimiters to saveTID
 		display notification "ƒ " & prFileFolder with title "Product file re-registered" subtitle prFileNameTail
 		return
 	end reregPrFile
