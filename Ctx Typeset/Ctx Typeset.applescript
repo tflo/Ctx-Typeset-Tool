@@ -800,12 +800,14 @@ Syntax checker says:
 	------------------------------------------------------------------------------
 	
 	on getFileNameComponents()
-		tell application asocRunner
-			set fileNameHead to containing item of (parsed path fileName) as text
-			set fileNameTail to name of (parsed path fileName) as text
-			set fileNameRoot to name stub of (parsed path fileName) as text
-			set parentFolder to name of (about file (containing item of (parsed path fileName) as text))
-		end tell
+		set saveTID to AppleScript's text item delimiters
+		set AppleScript's text item delimiters to {"/"}
+		set fileNameHead to text items 1 through -2 of fileName as text
+		set fileNameTail to text item -1 of fileName
+		set parentFolder to text item -2 of fileName
+		set AppleScript's text item delimiters to {".tex"}
+		set fileNameRoot to text item 1 of fileNameTail
+		set AppleScript's text item delimiters to saveTID
 		return
 	end getFileNameComponents
 	
