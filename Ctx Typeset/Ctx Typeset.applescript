@@ -944,9 +944,10 @@ Syntax checker says:
 		if prFile is "" then return
 		set prevPrFile to prFile
 		set prFile to ""
-		tell application asocRunner
-			set prevPrFileNameTail to name of (parsed path prevPrFile) as text
-		end tell
+		set saveTID to AppleScript's text item delimiters
+		set AppleScript's text item delimiters to {"/"}
+		set prevPrFileNameTail to text item -1 of prevPrFile
+		set AppleScript's text item delimiters to saveTID
 		display notification "Previous product file: " & prevPrFileNameTail with title "Product file unregistered" subtitle prFileNameTail
 		return
 	end unregPrFile
