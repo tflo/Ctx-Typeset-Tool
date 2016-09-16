@@ -585,7 +585,14 @@ using terms from application "ASObjC Runner-N"
 		end tell
 		if (mainList does not contain lTools) or ((mainList contains lTools) and (terminalWinForeground is false)) then tell application previousApp to activate
 		if mainList is false then error number -128
-		tell application asocRunner to set mainList to (refine list mainList using predicates {"not self contains 'Set PDF Viewer'", "not self contains 'Tools'", "not self contains 'egister'", "not self contains 'Help'"})
+		# Clean list from selections that shouldn’t be remembered
+		set tmpList to mainList
+		set mainList to {}
+		repeat with i from 1 to the count of tmpList
+			if item i of tmpList does not contain "Set PDF Viewer" and item i of tmpList does not contain "Tools" and item i of tmpList does not contain "egister" and item i of tmpList does not contain "Help" then
+				set end of mainList to item i of tmpList
+			end if
+		end repeat
 		return
 	end if
 	
