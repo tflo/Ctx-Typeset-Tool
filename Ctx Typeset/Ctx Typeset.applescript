@@ -256,16 +256,16 @@ property bakComprLevel : 2
 
 property asocRunner : ""
 --set asocRunner to (path to resource "bin/ASObjC Runner-N.app") as text
-set asocRunner to ("/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Typeset/Ctx Typeset - Sierra.scptd/Contents/Resources/bin/ASObjC Runner-N.app") as text
+set asocRunner to ("/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Typeset/Ctx Typeset.scptd/Contents/Resources/bin/ASObjC Runner-N.app") as text
 property terminalNotifier : ""
 --set terminalNotifier to (quoted form of POSIX path of (path to resource "bin/terminal-notifier.app/Contents/MacOS/terminal-notifier")) as text
-set terminalNotifier to (quoted form of POSIX path of ("/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Typeset/Ctx Typeset - Sierra.scptd/Contents/Resources/bin/terminal-notifier.app")) as text
+set terminalNotifier to (quoted form of POSIX path of ("/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Typeset/Ctx Typeset.scptd/Contents/Resources/bin/terminal-notifier.app")) as text
 property p7z : ""
 --set p7z to (quoted form of POSIX path of (path to resource "bin/7zr")) as text
-set p7z to (quoted form of POSIX path of ("/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Typeset/Ctx Typeset - Sierra.scptd/Contents/Resources/bin/7zr")) as text
+set p7z to (quoted form of POSIX path of ("/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Typeset/Ctx Typeset.scptd/Contents/Resources/bin/7zr")) as text
 property descrFile : ""
 --set descrFile to (path to resource "Manual/Manual.html") as text
-set descrFile to ("/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Typeset/Ctx Typeset - Sierra.scptd/Contents/Resources/Manual/Manual.html") as text
+set descrFile to ("/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Typeset/Ctx Typeset.scptd/Contents/Resources/Manual/Manual.html") as text
 
 -- Misc
 
