@@ -1005,11 +1005,13 @@ Syntax checker says:
 					"I will try to find the ‘setuptex’ files for you." & return & return & "Please choose the ‘setuptex’ path of your ConTeXt *Beta* from the *first* window, and the ‘setuptex’ of your ConTeXt *Current* from the *second*." & return & return & "If you only use one ConTeXt installation set both to the same ‘setuptex’ path." with title "Missing ConTeXt Paths!" buttons {"Later", "Search…"} default button 2 cancel button 1
 				set foundSetuptex to do shell script "mdfind -name 'setuptex' | grep  '/tex/setuptex$' ; exit 0"
 				if foundSetuptex is "" then
-					showSearchProgress() of me
-					-- In case user has disabled Spotlight or file is out of search scope of Spotlight
+					# In case user has disabled Spotlight or file is out of search scope of Spotlight
+					display alert "Deep Search Needed" message "The first search run with Spotlight didn’t yield any results. Now searching with ‘find’ in Home, /Users/Shared, /Applications, /opt, /usr/local and /usr/share. 
+					This may take a few seconds.
+					
+					Press OK to start deep search." buttons {"Cancel", "OK"} default button "OK" cancel button "Cancel"
 					set foundSetuptex to do shell script "find $HOME /Users/Shared /Applications /opt /usr/local /usr/share -name 'setuptex' -maxdepth 6 | grep  '/tex/setuptex$' ; exit 0"
 					-- Is the depth sufficient for nested install locations in ~/Library/ ?
-					stopProgress() of me
 				end if
 				if foundSetuptex is not "" then
 					set foundSetuptex to every paragraph of foundSetuptex
@@ -1053,19 +1055,6 @@ Syntax checker says:
 			set ctxCurrent to POSIX path of ctxCurrent as text
 		end tell
 	end manualPathSelection
-	
-	on showSearchProgress()
-		tell application asocRunner
-			reset progress
-			set properties of progress window to {button visible:false, indeterminate:true, message:"Deep Search…", detail:"The first search run with Spotlight didn’t yield any results. Now searching with 'find' in Home, /Users/Shared, /Applications, /opt, /usr/local and /usr/share."}
-			activate
-			show progress
-		end tell
-	end showSearchProgress
-	
-	on stopProgress()
-		tell application asocRunner to hide progress
-	end stopProgress
 	
 	on reselectCtx()
 		set ctxBeta to ""
