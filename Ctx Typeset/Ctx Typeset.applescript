@@ -865,8 +865,8 @@ Syntax checker says:
 					display alert "Please select 1 file." as warning
 					error number -128
 					-- only update  if a tex file is selected; otherwise reuse the last valid selection
-				else if (finderSel as text) ends with ".tex" then
-					set currentFinderFile to finderSel as text
+				else if (the finderSel as text) ends with ".tex" then
+					set currentFinderFile to the finderSel as text
 					set isFromFinder to true
 				end if
 			end try
@@ -891,8 +891,7 @@ Syntax checker says:
 	
 	on fileNameStandardization()
 		if isFromFinder then
-			-- Why doesn’t this work?: --set fileName to POSIX path of currentFinderFile as text
-			tell application asocRunner to set fileName to POSIX path of (about file currentFinderFile) as text
+			tell frontmost application to set fileName to POSIX path of currentFinderFile
 		else if isFromBBEdit then
 			set fileName to currentEditorFile as text
 		else -- URL to POSIX; for document names obtained through GUI scripting
