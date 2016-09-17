@@ -667,11 +667,13 @@ for the Finder or your text editor.**
 
 Thanks to the authors of these tools that are contained in the script bundle:
 
-- *ASObjC Runner* by Shane Stanley
-  (http://www.macosxautomation.com/applescript/apps/runner.html); used for 
-  modifier keys, progress bars, file path parsing, file URI parsing, …
 - *p7zip* (http://sourceforge.net/projects/p7zip/), originally by Igor Pavlov; 
   used for multithreaded creation of *xz* archive for ConTeXt backup.
+- Thanks also to Shane Stanley for his *ASObjC Runner*
+  (http://www.macosxautomation.com/applescript/apps/runner.html), which was used
+  in *all previous* versions of this script and has helped me tremendously
+  building up the script. *ASObjC Runner* is not compatible with macOS Sierra, so
+  the current version of the script no longer contains it.
 
 
 [^texlive]: In order to make the script work with a TexLive 

@@ -266,9 +266,6 @@ property bakComprLevel : 2
 
 -- Bundled files
 
-property asocRunner : ""
---set asocRunner to (path to resource "bin/ASObjC Runner-N.app") as text
-set asocRunner to ("/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Typeset/Ctx Typeset.scptd/Contents/Resources/bin/ASObjC Runner-N.app") as text
 property p7z : ""
 --set p7z to (quoted form of POSIX path of (path to resource "bin/7zr")) as text
 set p7z to (quoted form of POSIX path of ("/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Typeset/Ctx Typeset.scptd/Contents/Resources/bin/7zr")) as text
@@ -366,8 +363,6 @@ property cListFontsAll : "mtxrun --script fonts --list --all"
 property cFirstsetupUpdate : "rsync -ptv rsync://contextgarden.net/minimals/setup/first-setup.sh ."
 
 
-using terms from application "ASObjC Runner-N"
-	
 	------------------------------------------------------------------------------
 	------------------------------------------------------------------------------
 	-- Script
@@ -1360,8 +1355,6 @@ Syntax checker says:
 		end if
 	end refreshSkim
 	
-end using terms from
-
 on modifierKeyTest()
 	set keyDown to {commandDown:false, optionDown:false, controlDown:false, shiftDown:false}
 	
