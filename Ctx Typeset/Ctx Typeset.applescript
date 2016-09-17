@@ -275,6 +275,9 @@ set descrFile to ("/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Type
 
 -- Misc
 
+property NSRegularExpressionSearch : a reference to 1024
+property NSString : a reference to current application's NSString
+
 global fileName, fileNameHead, fileNameTail, fileNameRoot, parentFolder, isFromFinder, isFromBBEdit, targetApp, currentEditorFile, showList, dirNameCtx, bakName, ctxVersiondate, makeNewBak, cSourceCtx, tsModeSwap, previousApp, keyDown
 set currentEditorFile to ""
 set fileName to "" -- if not reset previous fileName will be processed even in case of error
@@ -1113,11 +1116,15 @@ Syntax checker says:
 				display dialog "Version Info" & return & return & "ConTeXt Beta:" & return & return & ctxBetaVersion & return & return & "ConTeXt Current:" & return & return & ctxCurrentVersion buttons {"Copy to clipboard", "OK"} default button 2
 			end tell
 			if button returned of the result is "Copy to clipboard" then
-				tell application asocRunner
-					look for "(ConTeXt):\\s*" in (ctxBetaVersion & return & ctxCurrentVersion) replacing with "$1 "
-					look for "\\r(LuaTeX):\\s*" in result replacing with "; $1 "
-					set the clipboard to the result
-				end tell
+				# A more compact form for the clipboard
+				set versionString to ctxBetaVersion & return & ctxCurrentVersion
+				set theFind to {"(ConTeXt):\\s*", "\\r(LuaTeX):\\s*"}
+				set theReplace to {"$1 ", "; $1 "}
+				repeat with i from 1 to number of items in theFind
+					set theText to (NSString's stringWithString:versionString)
+					set versionString to (theText's stringByReplacingOccurrencesOfString:(item i of theFind) withString:(item i of theReplace) options:NSRegularExpressionSearch range:{0, theText's |length|()}) as text
+				end repeat
+				set the clipboard to versionString
 			end if
 		end try
 	end getVersionInfo
