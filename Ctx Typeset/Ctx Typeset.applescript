@@ -2,7 +2,7 @@
 # What it does: Launches ConTeXt typesetting and provides a GUI for various ConTeXt tools.
 # Web page: <http://dflect.net/context-typeset-tool/>
 # Author: Thomas Floeren <ecdltf@mac.com>
-# Version / date: 1.2.5 (64) / 2016-03-22
+# Version / date: 1.3.0b (65) / 2016-09-17
 # 
 # Copyright © 2013-2016 Thomas Floeren
 # 
@@ -41,13 +41,13 @@ use scripting additions
 
 # Note: Normally it’s not necessary to set the paths here!
 
---property ctxBeta : "/Users/XXX/ConTeXt/Beta/tex/setuptex" -- ConTeXt Beta
---property ctxCurrent : "/Users/XXX/ConTeXt/Current/tex/setuptex" -- ConTeXt Current
+property ctxBeta : "/Users/XXX/ConTeXt/Beta/tex/setuptex" -- ConTeXt Beta
+property ctxCurrent : "/Users/XXX/ConTeXt/Current/tex/setuptex" -- ConTeXt Current
 # For debugging:
 --property ctxBeta : "/Users/tom/ConTeXt/Beta/tex/setuptex" -- ConTeXt Beta
 --property ctxCurrent : "/Users/tom/ConTeXt/Current/tex/setuptex" -- ConTeXt Current
-property ctxBeta : "/Users/tom/_Tmp ƒ/ConTeXt-test/Beta/tex/setuptex" -- ConTeXt Beta
-property ctxCurrent : "/Users/tom/_Tmp ƒ/ConTeXt-test/Current/tex/setuptex" -- ConTeXt Current
+--property ctxBeta : "/Users/tom/_Tmp ƒ/ConTeXt-test/Beta/tex/setuptex" -- ConTeXt Beta
+--property ctxCurrent : "/Users/tom/_Tmp ƒ/ConTeXt-test/Current/tex/setuptex" -- ConTeXt Current
 
 # If you have only one ConTeXt directory set both to the same value
 
@@ -363,368 +363,368 @@ property cListFontsAll : "mtxrun --script fonts --list --all"
 property cFirstsetupUpdate : "rsync -ptv rsync://contextgarden.net/minimals/setup/first-setup.sh ."
 
 
-	------------------------------------------------------------------------------
-	------------------------------------------------------------------------------
-	-- Script
-	------------------------------------------------------------------------------
-	------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+-- Script
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+
+testPaths()
+
+------------------------------------------------------------------------------
+-- Modifier keys
+------------------------------------------------------------------------------
+
+modifierKeyTest()
+
+if keyDown's optionDown and keyDown's controlDown then -- Lock on product file
+	regPrFile() of me
+	return
+else if keyDown's shiftDown and keyDown's optionDown then -- Swap run mode (Terminal vs shell)
 	
-	testPaths()
+	--if not terminalMode then -- Permanent swapping …
+	--	set terminalMode to true
+	--else
+	--	set terminalMode to false
 	
-	------------------------------------------------------------------------------
-	-- Modifier keys
-	------------------------------------------------------------------------------
+	set runModeSwap to true -- … or non-permanent swapping(?)
+else if keyDown's shiftDown then -- Swap auto-launching of pdf viewer
+	set pdfViewerLaunchSwap to true
+else if keyDown's optionDown then -- Swap Product mode (force Finder selection to be typeset)
 	
-	modifierKeyTest()
+	--if not finderOnly then -- Permanent swapping …
+	--	set finderOnly to true
+	--else
+	--	set finderOnly to false
 	
-	if keyDown's optionDown and keyDown's controlDown then -- Lock on product file
-		regPrFile() of me
-		return
-	else if keyDown's shiftDown and keyDown's optionDown then -- Swap run mode (Terminal vs shell)
-		
-		--if not terminalMode then -- Permanent swapping …
-		--	set terminalMode to true
-		--else
-		--	set terminalMode to false
-		
-		set runModeSwap to true -- … or non-permanent swapping(?)
-	else if keyDown's shiftDown then -- Swap auto-launching of pdf viewer
-		set pdfViewerLaunchSwap to true
-	else if keyDown's optionDown then -- Swap Product mode (force Finder selection to be typeset)
-		
-		--if not finderOnly then -- Permanent swapping …
-		--	set finderOnly to true
-		--else
-		--	set finderOnly to false
-		
-		set tsModeSwap to true -- … or non-permanent swapping(?)
-	else if keyDown's controlDown then
-		set showList to true
+	set tsModeSwap to true -- … or non-permanent swapping(?)
+else if keyDown's controlDown then
+	set showList to true
+end if
+
+
+------------------------------------------------------------------------------
+-- Settings list
+------------------------------------------------------------------------------
+
+if showList then
+	
+	set showPrFile to ""
+	set showPrevPrFile to ""
+	
+	if prFile is "" then
+		set showPrFile to " (n/a)"
+	else
+		set showPrFile to " (" & quoted form of prFileNameTail & ")"
 	end if
 	
-	
-	------------------------------------------------------------------------------
-	-- Settings list
-	------------------------------------------------------------------------------
-	
-	if showList then
+	if prevPrFile is "" or prevPrFile is prFile then
+		set showPrevPrFile to " (n/a)"
+	else
+		set showPrevPrFile to " (" & quoted form of prevPrFileNameTail & ")"
 		
-		set showPrFile to ""
-		set showPrevPrFile to ""
+	end if
+	set lUnregPrFile to " 	▶	Unregister Product File" & showPrFile
+	set lReregPrFile to " 	▶	Re-Register Previous Product File" & showPrevPrFile
+	
+	tell application "System Events"
+		activate
+		set mainList to choose from list {¬
+			lCtx, ¬
+			lJit, ¬
+			lprMode, ¬
+			lRegPrFile, ¬
+			lUnregPrFile, ¬
+			lReregPrFile, ¬
+			lTerminal, ¬
+			lTerminalNew, ¬
+			lPdfViewerAuto, ¬
+			lPdfViewerChange, ¬
+			lSynctex, ¬
+			lTerminalBack, ¬
+			lTM, ¬
+			lLogViewer, ¬
+			lAutoSynCheck, ¬
+			lNotifications, ¬
+			lSound, ¬
+			lTools, ¬
+			lHelp} ¬
+			with title "Options" with prompt "Hold cmd key ⌘ down to select/deselect multiple entries." OK button name "OK" cancel button name "Cancel" default items mainList multiple selections allowed yes empty selection allowed yes
 		
-		if prFile is "" then
-			set showPrFile to " (n/a)"
+		--if the button returned of mainList is "Cancel" then error number -128
+		
+		if mainList contains lCtx then
+			set myCtx to ctxCurrent
 		else
-			set showPrFile to " (" & quoted form of prFileNameTail & ")"
+			set myCtx to ctxBeta
+		end if
+		if mainList contains lJit then
+			set useJit to true
+		else
+			set useJit to false
+		end if
+		if mainList contains lprMode then
+			set prMode to true
+		else
+			set prMode to false
+		end if
+		if mainList contains lRegPrFile then
+			regPrFile() of me
+		else if mainList contains lUnregPrFile then
+			unregPrFile() of me
+		else if mainList contains lReregPrFile then
+			reregPrFile() of me
+		end if
+		if mainList contains lTerminal then
+			set terminalMode to true
+		else
+			set terminalMode to false
+		end if
+		if mainList contains lTerminalBack then
+			set terminalWinForeground to false
+		else
+			set terminalWinForeground to true
+		end if
+		if mainList contains lTerminalNew then
+			set terminalWinRecycle to false
+		else
+			set terminalWinRecycle to true
+		end if
+		if mainList contains lPdfViewerAuto then
+			set pdfViewerLaunch to false
+		else
+			set pdfViewerLaunch to true
+		end if
+		if mainList contains lSynctex then
+			set syncTex to true
+		else
+			set syncTex to false
+		end if
+		if mainList contains lLogViewer then
+			set logViewerNormal to targetApp
+		else
+			set logViewerNormal to "Console"
+		end if
+		if mainList contains lAutoSynCheck then
+			set autoSyntaxCheck to false
+		else
+			set autoSyntaxCheck to true
+		end if
+		if mainList contains lNotifications then
+			set enableNotifications to false
+		else
+			set enableNotifications to true
+		end if
+		if mainList contains lSound then
+			set enableSound to false
+		else
+			set enableSound to true
+		end if
+		if mainList contains lTM then
+			set enableTMexclude to false
+		else
+			set enableTMexclude to true
+		end if
+		if mainList contains lHelp then openDescription() of me
+		
+		if mainList contains lPdfViewerChange then
+			set pdfViewerList to choose from list {¬
+				"Preview", ¬
+				"Skim", ¬
+				"Adobe Acrobat Pro", ¬
+				"Adobe Reader", ¬
+				"PDFpenPro"} ¬
+				with title "Choose PDF Viewer" OK button name "OK" cancel button name "Cancel" default items pdfViewerList multiple selections allowed no empty selection allowed no
+			my setPdfViewer()
 		end if
 		
-		if prevPrFile is "" or prevPrFile is prFile then
-			set showPrevPrFile to " (n/a)"
-		else
-			set showPrevPrFile to " (" & quoted form of prevPrFileNameTail & ")"
-			
-		end if
-		set lUnregPrFile to " 	▶	Unregister Product File" & showPrFile
-		set lReregPrFile to " 	▶	Re-Register Previous Product File" & showPrevPrFile
-		
-		tell application "System Events"
-			activate
-			set mainList to choose from list {¬
-				lCtx, ¬
-				lJit, ¬
-				lprMode, ¬
-				lRegPrFile, ¬
-				lUnregPrFile, ¬
-				lReregPrFile, ¬
-				lTerminal, ¬
-				lTerminalNew, ¬
-				lPdfViewerAuto, ¬
-				lPdfViewerChange, ¬
-				lSynctex, ¬
-				lTerminalBack, ¬
-				lTM, ¬
-				lLogViewer, ¬
-				lAutoSynCheck, ¬
-				lNotifications, ¬
-				lSound, ¬
-				lTools, ¬
+		if mainList contains lTools then
+			set toolsList to choose from list {¬
+				lPurge, ¬
+				lPurgeall, ¬
+				lTrashPdf, ¬
+				lManualSynCheck, ¬
+				lVersionInfo, ¬
+				lUpdBeta, ¬
+				lUpdCurrent, ¬
+				lSelectNewCtx, ¬
+				lListFontsAll, ¬
+				lMakeFormatsBeta, ¬
+				lMakeFormatsCurrent, ¬
 				lHelp} ¬
-				with title "Options" with prompt "Hold cmd key ⌘ down to select/deselect multiple entries." OK button name "OK" cancel button name "Cancel" default items mainList multiple selections allowed yes empty selection allowed yes
-			
-			--if the button returned of mainList is "Cancel" then error number -128
-			
-			if mainList contains lCtx then
-				set myCtx to ctxCurrent
-			else
-				set myCtx to ctxBeta
+				with title "Tools" OK button name "OK" cancel button name "Cancel" default items "" multiple selections allowed yes empty selection allowed no
+			if toolsList contains lVersionInfo then
+				my getVersionInfo()
+			else if toolsList contains lManualSynCheck then
+				my synCheck()
+			else if toolsList contains lUpdBeta then
+				my updCtx(ctxBeta)
+			else if toolsList contains lUpdCurrent then
+				my updCtx(ctxCurrent)
+			else if toolsList contains lSelectNewCtx then
+				my reselectCtx()
+			else if toolsList contains lMakeFormatsBeta then
+				my makeFormatsBeta()
+			else if toolsList contains lMakeFormatsCurrent then
+				my makeFormatsCurrent()
+			else if toolsList contains lListFontsAll then
+				my listFontsAll()
+			else if toolsList contains lPurge and toolsList contains lTrashPdf then
+				my trashPdfpurgeNormal()
+			else if toolsList contains lPurgeall and toolsList contains lTrashPdf then
+				my trashPdfpurgeAll()
+			else if toolsList contains lPurge then
+				my purgeNormal()
+			else if toolsList contains lPurgeall then
+				my purgeAll()
+			else if toolsList contains lTrashPdf then
+				my trashPdf()
+			else if toolsList contains lHelp then
+				my openDescription()
 			end if
-			if mainList contains lJit then
-				set useJit to true
-			else
-				set useJit to false
-			end if
-			if mainList contains lprMode then
-				set prMode to true
-			else
-				set prMode to false
-			end if
-			if mainList contains lRegPrFile then
-				regPrFile() of me
-			else if mainList contains lUnregPrFile then
-				unregPrFile() of me
-			else if mainList contains lReregPrFile then
-				reregPrFile() of me
-			end if
-			if mainList contains lTerminal then
-				set terminalMode to true
-			else
-				set terminalMode to false
-			end if
-			if mainList contains lTerminalBack then
-				set terminalWinForeground to false
-			else
-				set terminalWinForeground to true
-			end if
-			if mainList contains lTerminalNew then
-				set terminalWinRecycle to false
-			else
-				set terminalWinRecycle to true
-			end if
-			if mainList contains lPdfViewerAuto then
-				set pdfViewerLaunch to false
-			else
-				set pdfViewerLaunch to true
-			end if
-			if mainList contains lSynctex then
-				set syncTex to true
-			else
-				set syncTex to false
-			end if
-			if mainList contains lLogViewer then
-				set logViewerNormal to targetApp
-			else
-				set logViewerNormal to "Console"
-			end if
-			if mainList contains lAutoSynCheck then
-				set autoSyntaxCheck to false
-			else
-				set autoSyntaxCheck to true
-			end if
-			if mainList contains lNotifications then
-				set enableNotifications to false
-			else
-				set enableNotifications to true
-			end if
-			if mainList contains lSound then
-				set enableSound to false
-			else
-				set enableSound to true
-			end if
-			if mainList contains lTM then
-				set enableTMexclude to false
-			else
-				set enableTMexclude to true
-			end if
-			if mainList contains lHelp then openDescription() of me
-			
-			if mainList contains lPdfViewerChange then
-				set pdfViewerList to choose from list {¬
-					"Preview", ¬
-					"Skim", ¬
-					"Adobe Acrobat Pro", ¬
-					"Adobe Reader", ¬
-					"PDFpenPro"} ¬
-					with title "Choose PDF Viewer" OK button name "OK" cancel button name "Cancel" default items pdfViewerList multiple selections allowed no empty selection allowed no
-				my setPdfViewer()
-			end if
-			
-			if mainList contains lTools then
-				set toolsList to choose from list {¬
-					lPurge, ¬
-					lPurgeall, ¬
-					lTrashPdf, ¬
-					lManualSynCheck, ¬
-					lVersionInfo, ¬
-					lUpdBeta, ¬
-					lUpdCurrent, ¬
-					lSelectNewCtx, ¬
-					lListFontsAll, ¬
-					lMakeFormatsBeta, ¬
-					lMakeFormatsCurrent, ¬
-					lHelp} ¬
-					with title "Tools" OK button name "OK" cancel button name "Cancel" default items "" multiple selections allowed yes empty selection allowed no
-				if toolsList contains lVersionInfo then
-					my getVersionInfo()
-				else if toolsList contains lManualSynCheck then
-					my synCheck()
-				else if toolsList contains lUpdBeta then
-					my updCtx(ctxBeta)
-				else if toolsList contains lUpdCurrent then
-					my updCtx(ctxCurrent)
-				else if toolsList contains lSelectNewCtx then
-					my reselectCtx()
-				else if toolsList contains lMakeFormatsBeta then
-					my makeFormatsBeta()
-				else if toolsList contains lMakeFormatsCurrent then
-					my makeFormatsCurrent()
-				else if toolsList contains lListFontsAll then
-					my listFontsAll()
-				else if toolsList contains lPurge and toolsList contains lTrashPdf then
-					my trashPdfpurgeNormal()
-				else if toolsList contains lPurgeall and toolsList contains lTrashPdf then
-					my trashPdfpurgeAll()
-				else if toolsList contains lPurge then
-					my purgeNormal()
-				else if toolsList contains lPurgeall then
-					my purgeAll()
-				else if toolsList contains lTrashPdf then
-					my trashPdf()
-				else if toolsList contains lHelp then
-					my openDescription()
-				end if
-			end if
-		end tell
-		if (mainList does not contain lTools) or ((mainList contains lTools) and (terminalWinForeground is false)) then tell application previousApp to activate
-		if mainList is false then error number -128
-		# Clean list from selections that shouldn’t be remembered
-		set tmpList to mainList
-		set mainList to {}
-		repeat with i from 1 to the count of tmpList
-			if item i of tmpList does not contain "Set PDF Viewer" and item i of tmpList does not contain "Tools" and item i of tmpList does not contain "egister" and item i of tmpList does not contain "Help" then
-				set end of mainList to item i of tmpList
-			end if
-		end repeat
-		return
-	end if
-	
-	
-	
-	------------------------------------------------------------------------------
-	-- Getting filename and paths
-	------------------------------------------------------------------------------
-	
-	-- Getting document
-	
-	if (prMode and not tsModeSwap) or (not prMode and tsModeSwap) then
-		if prFile is not "" then
-			set fileName to prFile -- Already POSIX
-		else
-			getFromFinderOnly()
-			fileNameStandardization()
 		end if
-		set defactoPrMode to true
+	end tell
+	if (mainList does not contain lTools) or ((mainList contains lTools) and (terminalWinForeground is false)) then tell application previousApp to activate
+	if mainList is false then error number -128
+	# Clean list from selections that shouldn’t be remembered
+	set tmpList to mainList
+	set mainList to {}
+	repeat with i from 1 to the count of tmpList
+		if item i of tmpList does not contain "Set PDF Viewer" and item i of tmpList does not contain "Tools" and item i of tmpList does not contain "egister" and item i of tmpList does not contain "Help" then
+			set end of mainList to item i of tmpList
+		end if
+	end repeat
+	return
+end if
+
+
+
+------------------------------------------------------------------------------
+-- Getting filename and paths
+------------------------------------------------------------------------------
+
+-- Getting document
+
+if (prMode and not tsModeSwap) or (not prMode and tsModeSwap) then
+	if prFile is not "" then
+		set fileName to prFile -- Already POSIX
 	else
-		getFromEditorFirst() -- Getting document from text editor app and then from Finder selection
+		getFromFinderOnly()
 		fileNameStandardization()
-		set defactoPrMode to false
 	end if
-	
-	filetypeCheck()
-	
-	-- Getting file name components
-	
-	getFileNameComponents()
-	
-	tell application previousApp to activate
-	
-	------------------------------------------------------------------------------
-	-- Other variables for the command string
-	------------------------------------------------------------------------------
-	
-	-- PDF viewer 
-	if (pdfViewerLaunch and not pdfViewerLaunchSwap) or (not pdfViewerLaunch and pdfViewerLaunchSwap) then
-		set pdfOpen to " && open -b " & pdfViewer & space & quoted form of fileNameRoot & ".pdf"
-	else
-		set pdfOpen to ""
-	end if
-	
-	-- Exclude aux files and – optionally – output PDF from Time Machine backup 
-	if enableTMexclude then
-		set TMExclude to " && xattr -w" & space & xattrTMExclusion & space & quoted form of fileNameRoot & ".pdf" & space & quoted form of fileNameRoot & ".tuc" & space & quoted form of fileNameRoot & ".log && [ ! -f" & space & quoted form of fileNameRoot & ".synctex.gz ] || xattr -w" & space & xattrTMExclusion & space & quoted form of fileNameRoot & ".synctex.gz"
-	else
-		set TMExclude to " && xattr -w" & space & xattrTMExclusion & space & quoted form of fileNameRoot & ".tuc" & space & quoted form of fileNameRoot & ".log && [ ! -f" & space & quoted form of fileNameRoot & ".synctex.gz ] || xattr -w" & space & xattrTMExclusion & space & quoted form of fileNameRoot & ".synctex.gz"
-	end if
-	
-	
-	-- Completion sound 
-	
-	if enableSound then
-		set makeNoise to " && afplay " & quoted form of finishSound
-	else
-		set makeNoise to ""
-	end if
-	
-	
-	-- Case-specific log viewer
-	
-	if not isFromFinder then
-		set logViewer to logViewerNormal
-	else
-		set logViewer to logViewerFinder
-	end if
-	if logViewer is "Current Editor" then set logViewer to targetApp
-	
-	
-	-- Displayed info on ConTeXt installation
-	if ctxBeta is ctxCurrent then
-		set showCtx to "ConTeXt"
-	else if myCtx is ctxBeta then
-		set showCtx to "ConTeXt (Beta)"
-	else if myCtx is ctxCurrent then
-		set showCtx to "ConTeXt (Current)"
-	else
-		tell application "System Events"
-			activate
-			beep 10
-			display alert "This cannot happen."
-		end tell
-	end if
-	
-	
-	-- Parent item (product folder / component folder in product mode | product file in normal mode)
-	
-	if defactoPrMode and prFile is not "" then
-		set {parentItem, showTsMode} to {"ƒ " & prFileFolder, "Product Mode"}
-	else if defactoPrMode then
-		set {parentItem, showTsMode} to {"ƒ " & parentFolder, "Product Mode"}
-	else if not defactoPrMode and prFile is not "" then
-		set {parentItem, showTsMode} to {prFileNameTail, "Normal Mode"}
-	else
-		set {parentItem, showTsMode} to {"ƒ " & parentFolder, "Normal Mode"}
-	end if
-	
-	
-	-- Notifications
-	
-	set {notificationStart, notificationEnd} to {"", ""}
-	
-	
-	-- ConTeXt and options
-	
-	set ctxRun to " && mtxrun --script context --autogenerate "
-	
-	if (not terminalMode and not runModeSwap) or (terminalMode and runModeSwap) then
-		set optConsole to "--noConsole "
-	else
-		set optConsole to ""
-	end if
-	
-	if useJit then
-		set optJit to "--jit "
-	else
-		set optJit to ""
-	end if
-	
-	if syncTex then
-		set optSync to "--synctex=zipped "
-	else
-		set optSync to ""
-	end if
-	
-	
-	-- Skim refresh
-	-- Can’t make this work ATM, so Skim refresh is currently limited to non-terminal typesetting mode
-	(*
+	set defactoPrMode to true
+else
+	getFromEditorFirst() -- Getting document from text editor app and then from Finder selection
+	fileNameStandardization()
+	set defactoPrMode to false
+end if
+
+filetypeCheck()
+
+-- Getting file name components
+
+getFileNameComponents()
+
+tell application previousApp to activate
+
+------------------------------------------------------------------------------
+-- Other variables for the command string
+------------------------------------------------------------------------------
+
+-- PDF viewer 
+if (pdfViewerLaunch and not pdfViewerLaunchSwap) or (not pdfViewerLaunch and pdfViewerLaunchSwap) then
+	set pdfOpen to " && open -b " & pdfViewer & space & quoted form of fileNameRoot & ".pdf"
+else
+	set pdfOpen to ""
+end if
+
+-- Exclude aux files and – optionally – output PDF from Time Machine backup 
+if enableTMexclude then
+	set TMExclude to " && xattr -w" & space & xattrTMExclusion & space & quoted form of fileNameRoot & ".pdf" & space & quoted form of fileNameRoot & ".tuc" & space & quoted form of fileNameRoot & ".log && [ ! -f" & space & quoted form of fileNameRoot & ".synctex.gz ] || xattr -w" & space & xattrTMExclusion & space & quoted form of fileNameRoot & ".synctex.gz"
+else
+	set TMExclude to " && xattr -w" & space & xattrTMExclusion & space & quoted form of fileNameRoot & ".tuc" & space & quoted form of fileNameRoot & ".log && [ ! -f" & space & quoted form of fileNameRoot & ".synctex.gz ] || xattr -w" & space & xattrTMExclusion & space & quoted form of fileNameRoot & ".synctex.gz"
+end if
+
+
+-- Completion sound 
+
+if enableSound then
+	set makeNoise to " && afplay " & quoted form of finishSound
+else
+	set makeNoise to ""
+end if
+
+
+-- Case-specific log viewer
+
+if not isFromFinder then
+	set logViewer to logViewerNormal
+else
+	set logViewer to logViewerFinder
+end if
+if logViewer is "Current Editor" then set logViewer to targetApp
+
+
+-- Displayed info on ConTeXt installation
+if ctxBeta is ctxCurrent then
+	set showCtx to "ConTeXt"
+else if myCtx is ctxBeta then
+	set showCtx to "ConTeXt (Beta)"
+else if myCtx is ctxCurrent then
+	set showCtx to "ConTeXt (Current)"
+else
+	tell application "System Events"
+		activate
+		beep 10
+		display alert "This cannot happen."
+	end tell
+end if
+
+
+-- Parent item (product folder / component folder in product mode | product file in normal mode)
+
+if defactoPrMode and prFile is not "" then
+	set {parentItem, showTsMode} to {"ƒ " & prFileFolder, "Product Mode"}
+else if defactoPrMode then
+	set {parentItem, showTsMode} to {"ƒ " & parentFolder, "Product Mode"}
+else if not defactoPrMode and prFile is not "" then
+	set {parentItem, showTsMode} to {prFileNameTail, "Normal Mode"}
+else
+	set {parentItem, showTsMode} to {"ƒ " & parentFolder, "Normal Mode"}
+end if
+
+
+-- Notifications
+
+set {notificationStart, notificationEnd} to {"", ""}
+
+
+-- ConTeXt and options
+
+set ctxRun to " && mtxrun --script context --autogenerate "
+
+if (not terminalMode and not runModeSwap) or (terminalMode and runModeSwap) then
+	set optConsole to "--noConsole "
+else
+	set optConsole to ""
+end if
+
+if useJit then
+	set optJit to "--jit "
+else
+	set optJit to ""
+end if
+
+if syncTex then
+	set optSync to "--synctex=zipped "
+else
+	set optSync to ""
+end if
+
+
+-- Skim refresh
+-- Can’t make this work ATM, so Skim refresh is currently limited to non-terminal typesetting mode
+(*
 	if pdfViewer is "net.sourceforge.skim-app.skim" then
 		set pdfName to (fileNameHead & "/" & fileNameRoot & ".pdf")
 		set skimRefresh to " && osascript -e 'tell application \"Skim\"' -e 'set skimPDF to get documents whose path is " & quoted form of pdfName & "' -e 'if (count of skimPDF) greater than 0 then revert skimPDF' -e 'end tell'"
@@ -732,629 +732,629 @@ property cFirstsetupUpdate : "rsync -ptv rsync://contextgarden.net/minimals/setu
 		set skimRefresh to ""
 	end if
 *)
-	
-	------------------------------------------------------------------------------
-	-- Actual Bash command strings
-	------------------------------------------------------------------------------
-	
-	set typesetCmd to notificationStart ¬
-		& "ulimit -n 1024 ; " & cSourceCtx ¬
-		& " && cd " & quoted form of fileNameHead ¬
-		& ctxRun ¬
-		& optJit ¬
-		& optSync ¬
-		& optConsole ¬
-		& quoted form of fileNameTail ¬
-		& makeNoise ¬
-		& notificationEnd ¬
-		& pdfOpen ¬
-		& TMExclude
-	
-	set autoCheckCmd to "cd " & quoted form of fileNameHead & " && " & cSourceCtx & " && { printf \"
+
+------------------------------------------------------------------------------
+-- Actual Bash command strings
+------------------------------------------------------------------------------
+
+set typesetCmd to notificationStart ¬
+	& "ulimit -n 1024 ; " & cSourceCtx ¬
+	& " && cd " & quoted form of fileNameHead ¬
+	& ctxRun ¬
+	& optJit ¬
+	& optSync ¬
+	& optConsole ¬
+	& quoted form of fileNameTail ¬
+	& makeNoise ¬
+	& notificationEnd ¬
+	& pdfOpen ¬
+	& TMExclude
+
+set autoCheckCmd to "cd " & quoted form of fileNameHead & " && " & cSourceCtx & " && { printf \"
 
 ---
 
 Syntax checker says:
 
 \" ; " & checkCmd & space & quoted form of fileNameTail & " ; } >> " & quoted form of fileNameRoot & ".log"
-	
-	set logViewCmd to "cd " & quoted form of fileNameHead & " && open -a  " & logViewer & space & quoted form of fileNameRoot & ".log"
-	
-	
-	------------------------------------------------------------------------------
-	-- Run
-	------------------------------------------------------------------------------
-	
-	display notification parentItem & " | " & showTsMode with title showCtx & " | Started ☕️" subtitle quoted form of fileNameTail
-	
-	if (not terminalMode and not runModeSwap) or (terminalMode and runModeSwap) then
-		try
-			do shell script typesetCmd
-			display notification parentItem & " | " & showTsMode with title showCtx & " | Completed 🍺" subtitle quoted form of fileNameTail
-			
-			# Experimental: Proper Skim reload
-			# Disable "Check for file changes" in Skim's prefs
-			refreshSkim()
-			
-		on error
-			try
-				do shell script logViewCmd
-			end try
-			if autoSyntaxCheck then do shell script autoCheckCmd
-			errorSound(soundNumber)
-			--error number -128
-			return
-		end try
+
+set logViewCmd to "cd " & quoted form of fileNameHead & " && open -a  " & logViewer & space & quoted form of fileNameRoot & ".log"
+
+
+------------------------------------------------------------------------------
+-- Run
+------------------------------------------------------------------------------
+
+display notification parentItem & " | " & showTsMode with title showCtx & " | Started ☕️" subtitle quoted form of fileNameTail
+
+if (not terminalMode and not runModeSwap) or (terminalMode and runModeSwap) then
+	try
+		do shell script typesetCmd
+		display notification parentItem & " | " & showTsMode with title showCtx & " | Completed 🍺" subtitle quoted form of fileNameTail
 		
-	else
-		doTerminal(typesetCmd)
-	end if
-	
-	set runCount to (runCount + 1)
-	if (runCount = 3) or (runCount = 9) or (runCount = 17) then firstTimeMessage()
-	
-	
-	------------------------------------------------------------------------------
-	------------------------------------------------------------------------------
-	-- Handlers
-	------------------------------------------------------------------------------
-	------------------------------------------------------------------------------
-	
-	on getFileNameComponents()
-		set saveTID to AppleScript's text item delimiters
-		set AppleScript's text item delimiters to {"/"}
-		set fileNameHead to text items 1 through -2 of fileName as text
-		set fileNameTail to text item -1 of fileName
-		set parentFolder to text item -2 of fileName
-		set AppleScript's text item delimiters to {".tex"}
-		set fileNameRoot to text item 1 of fileNameTail
-		set AppleScript's text item delimiters to saveTID
+		# Experimental: Proper Skim reload
+		# Disable "Check for file changes" in Skim's prefs
+		refreshSkim()
+		
+	on error
+		try
+			do shell script logViewCmd
+		end try
+		if autoSyntaxCheck then do shell script autoCheckCmd
+		errorSound(soundNumber)
+		--error number -128
 		return
-	end getFileNameComponents
+	end try
 	
-	-- 1st attempt: Get document from frontmost process
-	on getFromEditor()
-		tell application "System Events"
-			set targetApp to name of (first application process whose frontmost is true)
-			-- As of February 2015 BBEdit 11’s (10’s?)frontmost window is named 'window 2' instead of 'window 1'
-			-- So instead of switching to 'window 2' for BBEdit it is more robust
-			-- to use BBEdit's own AppleScript dictionary
-			if targetApp is "BBEdit" then
-				tell application "BBEdit"
+else
+	doTerminal(typesetCmd)
+end if
+
+set runCount to (runCount + 1)
+if (runCount = 3) or (runCount = 9) or (runCount = 17) then firstTimeMessage()
+
+
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+-- Handlers
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+
+on getFileNameComponents()
+	set saveTID to AppleScript's text item delimiters
+	set AppleScript's text item delimiters to {"/"}
+	set fileNameHead to text items 1 through -2 of fileName as text
+	set fileNameTail to text item -1 of fileName
+	set parentFolder to text item -2 of fileName
+	set AppleScript's text item delimiters to {".tex"}
+	set fileNameRoot to text item 1 of fileNameTail
+	set AppleScript's text item delimiters to saveTID
+	return
+end getFileNameComponents
+
+-- 1st attempt: Get document from frontmost process
+on getFromEditor()
+	tell application "System Events"
+		set targetApp to name of (first application process whose frontmost is true)
+		-- As of February 2015 BBEdit 11’s (10’s?)frontmost window is named 'window 2' instead of 'window 1'
+		-- So instead of switching to 'window 2' for BBEdit it is more robust
+		-- to use BBEdit's own AppleScript dictionary
+		if targetApp is "BBEdit" then
+			tell application "BBEdit"
+				-- Conditional is needed to preserve the variable in case of failure; Hmm, really?
+				if name of text document 1 ends with ".tex" then
+					set currentEditorFile to POSIX path of (file of text document 1 as alias)
+					set isFromFinder to false
+					set isFromBBEdit to true
+				end if
+			end tell
+		else
+			try
+				tell application process targetApp
 					-- Conditional is needed to preserve the variable in case of failure; Hmm, really?
-					if name of text document 1 ends with ".tex" then
-						set currentEditorFile to POSIX path of (file of text document 1 as alias)
+					if value of attribute "AXDocument" of window 1 ends with ".tex" then
+						set currentEditorFile to value of attribute "AXDocument" of window 1
 						set isFromFinder to false
-						set isFromBBEdit to true
 					end if
 				end tell
-			else
-				try
-					tell application process targetApp
-						-- Conditional is needed to preserve the variable in case of failure; Hmm, really?
-						if value of attribute "AXDocument" of window 1 ends with ".tex" then
-							set currentEditorFile to value of attribute "AXDocument" of window 1
-							set isFromFinder to false
-						end if
-					end tell
-				end try
-			end if
-		end tell
-		return
-	end getFromEditor
-	
-	-- Fallback in case our editor was pushed away from frontmost position 
-	-- (e.g. if user compiled the script as application bundle, or by a launcher, …)
-	on restoreFrontmostApp()
-		tell application "System Events"
-			-- if we are in Finder chances are high that we went there deliberately …
-			if name of (first application process whose frontmost is true) is not "Finder" then
-				set visible of the first application process whose frontmost is true to false
-				delay 0.7
-			end if
-		end tell
-	end restoreFrontmostApp
-	
-	-- 2nd attempt: Get Finder selection
-	on getFromFinder()
-		tell application "Finder"
-			--activate
-			try
-				set finderSel to the selection
-				if (count of finderSel) is greater than 1 then
-					say "oohps"
-					display alert "Please select 1 file." as warning
-					error number -128
-					-- only update  if a tex file is selected; otherwise reuse the last valid selection
-				else if (the finderSel as text) ends with ".tex" then
-					set currentFinderFile to the finderSel as text
-					set isFromFinder to true
-				end if
 			end try
-		end tell
-		return
-	end getFromFinder
-	
-	on getFromEditorFirst()
+		end if
+	end tell
+	return
+end getFromEditor
+
+-- Fallback in case our editor was pushed away from frontmost position 
+-- (e.g. if user compiled the script as application bundle, or by a launcher, …)
+on restoreFrontmostApp()
+	tell application "System Events"
+		-- if we are in Finder chances are high that we went there deliberately …
+		if name of (first application process whose frontmost is true) is not "Finder" then
+			set visible of the first application process whose frontmost is true to false
+			delay 0.7
+		end if
+	end tell
+end restoreFrontmostApp
+
+-- 2nd attempt: Get Finder selection
+on getFromFinder()
+	tell application "Finder"
+		--activate
+		try
+			set finderSel to the selection
+			if (count of finderSel) is greater than 1 then
+				say "oohps"
+				display alert "Please select 1 file." as warning
+				error number -128
+				-- only update  if a tex file is selected; otherwise reuse the last valid selection
+			else if (the finderSel as text) ends with ".tex" then
+				set currentFinderFile to the finderSel as text
+				set isFromFinder to true
+			end if
+		end try
+	end tell
+	return
+end getFromFinder
+
+on getFromEditorFirst()
+	getFromEditor()
+	if currentEditorFile does not end with ".tex" then
+		restoreFrontmostApp()
 		getFromEditor()
-		if currentEditorFile does not end with ".tex" then
-			restoreFrontmostApp()
-			getFromEditor()
-		end if
-		if currentEditorFile does not end with ".tex" then getFromFinder()
-		return
-	end getFromEditorFirst
-	
-	on getFromFinderOnly()
-		getFromFinder()
-		return
-	end getFromFinderOnly
-	
-	on fileNameStandardization()
-		if isFromFinder then
-			tell frontmost application to set fileName to POSIX path of currentFinderFile
-		else if isFromBBEdit then
-			set fileName to currentEditorFile as text
-		else -- URL to POSIX; for document names obtained through GUI scripting
-			try
-				set fileName to urlToPOSIXPath(currentEditorFile) as text
-			end try
-		end if
-		return
-	end fileNameStandardization
-	
-	on filetypeCheck()
-		if fileName does not end with ".tex" then noValidFileAlert()
-		return
-	end filetypeCheck
-	
-	on noValidFileAlert()
-		say "oohps"
-		tell application "System Events"
-			display alert "No TeX file found!" & return & return & ¬
-				"Make sure that …" & return & return & ¬
-				"… a '*.tex' file is opened in the first window of your text editor." & return & ¬
-				"… your text editor is the frontmost application." & return & ¬
-				"… your text editor is not hidden." & return & ¬
-				"… your text editor is compatible with this script." & return & return & ¬
-				"or …" & return & return & ¬
-				"… a '*.tex' file is selected in the Finder." & return & return & ¬
-				"Make sure that the system requirements are met (see description)." as warning
-		end tell
-		error number -128
-	end noValidFileAlert
-	
-	on regPrFile()
-		getFromEditorFirst()
-		fileNameStandardization()
-		filetypeCheck()
-		set prevPrFile to prFile
-		set prFile to fileName
-		set saveTID to AppleScript's text item delimiters
-		set AppleScript's text item delimiters to {"/"}
-		set prFileNameTail to text item -1 of prFile
-		set prFileFolder to text item -2 of prFile
-		set prevPrFileNameTail to text item -1 of prevPrFile
-		set AppleScript's text item delimiters to saveTID
-		display notification "ƒ " & prFileFolder with title "Product file registered" subtitle prFileNameTail
-		tell application previousApp to activate
-		return prFile
-	end regPrFile
-	
-	on unregPrFile()
-		if prFile is "" then return
-		set prevPrFile to prFile
-		set prFile to ""
-		set saveTID to AppleScript's text item delimiters
-		set AppleScript's text item delimiters to {"/"}
-		set prevPrFileNameTail to text item -1 of prevPrFile
-		set AppleScript's text item delimiters to saveTID
-		display notification "Previous product file: " & prevPrFileNameTail with title "Product file unregistered" subtitle prFileNameTail
-		return
-	end unregPrFile
-	
-	on reregPrFile()
-		if prevPrFile is "" or prFile is equal to prevPrFile then return
-		set tmpPrFile to prFile
-		set prFile to prevPrFile
-		set prevPrFile to tmpPrFile
-		set saveTID to AppleScript's text item delimiters
-		set AppleScript's text item delimiters to {"/"}
-		set prFileNameTail to text item -1 of prFile
-		set prFileFolder to text item -2 of prFile
-		set prevPrFileNameTail to text item -1 of prevPrFile
-		set AppleScript's text item delimiters to saveTID
-		display notification "ƒ " & prFileFolder with title "Product file re-registered" subtitle prFileNameTail
-		return
-	end reregPrFile
-	
-	
-	-- From http://macscripter.net/viewtopic.php?id=14861
-	-- Modified as in http://stackoverflow.com/questions/9617029/how-to-get-the-a-file-url-in-osx-with-applescript-or-a-shell-script
-	-- TODO: Find a better way without Python
-	on urlToPOSIXPath(theURL)
-		return do shell script "python -c \"import urllib, urlparse, sys; print (urllib.unquote(urlparse.urlparse(sys.argv[1])[2]))\" " & quoted form of theURL
-	end urlToPOSIXPath
-	
-	(*
+	end if
+	if currentEditorFile does not end with ".tex" then getFromFinder()
+	return
+end getFromEditorFirst
+
+on getFromFinderOnly()
+	getFromFinder()
+	return
+end getFromFinderOnly
+
+on fileNameStandardization()
+	if isFromFinder then
+		tell frontmost application to set fileName to POSIX path of currentFinderFile
+	else if isFromBBEdit then
+		set fileName to currentEditorFile as text
+	else -- URL to POSIX; for document names obtained through GUI scripting
+		try
+			set fileName to urlToPOSIXPath(currentEditorFile) as text
+		end try
+	end if
+	return
+end fileNameStandardization
+
+on filetypeCheck()
+	if fileName does not end with ".tex" then noValidFileAlert()
+	return
+end filetypeCheck
+
+on noValidFileAlert()
+	say "oohps"
+	tell application "System Events"
+		display alert "No TeX file found!" & return & return & ¬
+			"Make sure that …" & return & return & ¬
+			"… a '*.tex' file is opened in the first window of your text editor." & return & ¬
+			"… your text editor is the frontmost application." & return & ¬
+			"… your text editor is not hidden." & return & ¬
+			"… your text editor is compatible with this script." & return & return & ¬
+			"or …" & return & return & ¬
+			"… a '*.tex' file is selected in the Finder." & return & return & ¬
+			"Make sure that the system requirements are met (see description)." as warning
+	end tell
+	error number -128
+end noValidFileAlert
+
+on regPrFile()
+	getFromEditorFirst()
+	fileNameStandardization()
+	filetypeCheck()
+	set prevPrFile to prFile
+	set prFile to fileName
+	set saveTID to AppleScript's text item delimiters
+	set AppleScript's text item delimiters to {"/"}
+	set prFileNameTail to text item -1 of prFile
+	set prFileFolder to text item -2 of prFile
+	set prevPrFileNameTail to text item -1 of prevPrFile
+	set AppleScript's text item delimiters to saveTID
+	display notification "ƒ " & prFileFolder with title "Product file registered" subtitle prFileNameTail
+	tell application previousApp to activate
+	return prFile
+end regPrFile
+
+on unregPrFile()
+	if prFile is "" then return
+	set prevPrFile to prFile
+	set prFile to ""
+	set saveTID to AppleScript's text item delimiters
+	set AppleScript's text item delimiters to {"/"}
+	set prevPrFileNameTail to text item -1 of prevPrFile
+	set AppleScript's text item delimiters to saveTID
+	display notification "Previous product file: " & prevPrFileNameTail with title "Product file unregistered" subtitle prFileNameTail
+	return
+end unregPrFile
+
+on reregPrFile()
+	if prevPrFile is "" or prFile is equal to prevPrFile then return
+	set tmpPrFile to prFile
+	set prFile to prevPrFile
+	set prevPrFile to tmpPrFile
+	set saveTID to AppleScript's text item delimiters
+	set AppleScript's text item delimiters to {"/"}
+	set prFileNameTail to text item -1 of prFile
+	set prFileFolder to text item -2 of prFile
+	set prevPrFileNameTail to text item -1 of prevPrFile
+	set AppleScript's text item delimiters to saveTID
+	display notification "ƒ " & prFileFolder with title "Product file re-registered" subtitle prFileNameTail
+	return
+end reregPrFile
+
+
+-- From http://macscripter.net/viewtopic.php?id=14861
+-- Modified as in http://stackoverflow.com/questions/9617029/how-to-get-the-a-file-url-in-osx-with-applescript-or-a-shell-script
+-- TODO: Find a better way without Python
+on urlToPOSIXPath(theURL)
+	return do shell script "python -c \"import urllib, urlparse, sys; print (urllib.unquote(urlparse.urlparse(sys.argv[1])[2]))\" " & quoted form of theURL
+end urlToPOSIXPath
+
+(*
 	on urlToPOSIXFile(theURL)
 		return POSIX file urlToPOSIXPath(theURL)
 	end urlToPOSIXFile
 *)
-	
-	on setPdfViewer()
-		repeat with i in pdfViewerInventory
-			if (item 1 of i is item 1 of pdfViewerList) then
-				set pdfViewer to item 2 of i
-				exit repeat
-			end if
-		end repeat
-		return pdfViewer
-	end setPdfViewer
-	
-	-- Test for ConTeXt paths
-	on testPaths()
-		tell application "System Events"
-			activate
-			try
-				(ctxBeta as POSIX file) as alias
-				(ctxCurrent as POSIX file) as alias
-			on error
-				beep
-				display dialog ¬
-					"Your ConTeXt paths are not set correctly or have changed. The script needs the paths to the ‘setuptex’ files of your ConTeXt installations." & return & return & ¬
-					"I will try to find the ‘setuptex’ files for you." & return & return & "Please choose the ‘setuptex’ path of your ConTeXt *Beta* from the *first* window, and the ‘setuptex’ of your ConTeXt *Current* from the *second*." & return & return & "If you only use one ConTeXt installation set both to the same ‘setuptex’ path." with title "Missing ConTeXt Paths!" buttons {"Later", "Search…"} default button 2 cancel button 1
-				set foundSetuptex to do shell script "mdfind -name 'setuptex' | grep  '/tex/setuptex$' ; exit 0"
-				if foundSetuptex is "" then
-					# In case user has disabled Spotlight or file is out of search scope of Spotlight
-					display alert "Deep Search Needed" message "The first search run with Spotlight didn’t yield any results. Now searching with ‘find’ in Home, /Users/Shared, /Applications, /opt, /usr/local and /usr/share. 
+
+on setPdfViewer()
+	repeat with i in pdfViewerInventory
+		if (item 1 of i is item 1 of pdfViewerList) then
+			set pdfViewer to item 2 of i
+			exit repeat
+		end if
+	end repeat
+	return pdfViewer
+end setPdfViewer
+
+-- Test for ConTeXt paths
+on testPaths()
+	tell application "System Events"
+		activate
+		try
+			(ctxBeta as POSIX file) as alias
+			(ctxCurrent as POSIX file) as alias
+		on error
+			beep
+			display dialog ¬
+				"Your ConTeXt paths are not set correctly or have changed. The script needs the paths to the ‘setuptex’ files of your ConTeXt installations." & return & return & ¬
+				"I will try to find the ‘setuptex’ files for you." & return & return & "Please choose the ‘setuptex’ path of your ConTeXt *Beta* from the *first* window, and the ‘setuptex’ of your ConTeXt *Current* from the *second*." & return & return & "If you only use one ConTeXt installation set both to the same ‘setuptex’ path." with title "Missing ConTeXt Paths!" buttons {"Later", "Search…"} default button 2 cancel button 1
+			set foundSetuptex to do shell script "mdfind -name 'setuptex' | grep  '/tex/setuptex$' ; exit 0"
+			if foundSetuptex is "" then
+				# In case user has disabled Spotlight or file is out of search scope of Spotlight
+				display alert "Deep Search Needed" message "The first search run with Spotlight didn’t yield any results. Now searching with ‘find’ in Home, /Users/Shared, /Applications, /opt, /usr/local and /usr/share. 
 					This may take a few seconds.
 					
 					Press OK to start deep search." buttons {"Cancel", "OK"} default button "OK" cancel button "Cancel"
-					set foundSetuptex to do shell script "find $HOME /Users/Shared /Applications /opt /usr/local /usr/share -name 'setuptex' -maxdepth 6 | grep  '/tex/setuptex$' ; exit 0"
-					-- Is the depth sufficient for nested install locations in ~/Library/ ?
-				end if
-				if foundSetuptex is not "" then
-					set foundSetuptex to every paragraph of foundSetuptex
-					set foundSetuptex to foundSetuptex & notSuitable
-					set ctxBeta to choose from list foundSetuptex with title "‘setuptex’ from ConTeXt Beta" with prompt "Choose ‘setuptex’ path of your primary ConTeXt installation (usually ConTeXt *Beta*):" empty selection allowed no multiple selections allowed no
-					if ctxBeta is false then error number -128
-					if ctxBeta does not contain notSuitable then
-						set ctxCurrent to choose from list foundSetuptex with title "‘setuptex’ from ConTeXt Current" with prompt "Choose ‘setuptex’ path of your secondary ConTeXt installation (usually ConTeXt *Current*). If you use only one installation select the same as for the primary installation:" empty selection allowed no multiple selections allowed no
-						if ctxCurrent is false then error number -128
-						if ctxCurrent contains notSuitable then manualPathSelection() of me
-					else
-						manualPathSelection() of me
-					end if
+				set foundSetuptex to do shell script "find $HOME /Users/Shared /Applications /opt /usr/local /usr/share -name 'setuptex' -maxdepth 6 | grep  '/tex/setuptex$' ; exit 0"
+				-- Is the depth sufficient for nested install locations in ~/Library/ ?
+			end if
+			if foundSetuptex is not "" then
+				set foundSetuptex to every paragraph of foundSetuptex
+				set foundSetuptex to foundSetuptex & notSuitable
+				set ctxBeta to choose from list foundSetuptex with title "‘setuptex’ from ConTeXt Beta" with prompt "Choose ‘setuptex’ path of your primary ConTeXt installation (usually ConTeXt *Beta*):" empty selection allowed no multiple selections allowed no
+				if ctxBeta is false then error number -128
+				if ctxBeta does not contain notSuitable then
+					set ctxCurrent to choose from list foundSetuptex with title "‘setuptex’ from ConTeXt Current" with prompt "Choose ‘setuptex’ path of your secondary ConTeXt installation (usually ConTeXt *Current*). If you use only one installation select the same as for the primary installation:" empty selection allowed no multiple selections allowed no
+					if ctxCurrent is false then error number -128
+					if ctxCurrent contains notSuitable then manualPathSelection() of me
 				else
-					display dialog "Sorry, I couldn’t find any ‘setuptex’ file." & return & return & "If you are sure that ConTeXt is installed on this computer please select the files in the following file selection dialogs." & return & return & "(The ‘setuptex’ file is located in the ‘tex’ folder inside your ConTeXt directory.)" buttons {"Continue…"} default button 1
 					manualPathSelection() of me
 				end if
-				display dialog ¬
-					"The following paths have been set:" & return & return & "ConTeXt Beta:" & return & return & ctxBeta & return & return & "ConTeXt Current:" & return & return & ctxCurrent buttons {"Cancel", "Paths are correct"} default button 2
-				if the button returned of the result is "Cancel" then error number -128
-				set ctxBeta to (ctxBeta as text)
-				set ctxCurrent to (ctxCurrent as text)
-				set myCtx to ctxBeta
-				set cSourceCtx to "source " & quoted form of myCtx
-				set showList to true
-			end try
-		end tell
-	end testPaths
-	
-	on manualPathSelection()
-		tell application "System Events"
-			activate
-			set ctxBeta to choose file with prompt "Please select the ‘setuptex’ file of your ConTeXt Beta directory:" of type {""} default location (path to home folder)
-			try
-				set tmpDefaultPath to POSIX path of container of container of container of ctxBeta
-			on error
-				set tmpDefaultPath to (path to home folder)
-			end try
-			set ctxCurrent to choose file with prompt "Please select the ‘setuptex’ file of your ConTeXt Current directory:" of type {""} default location tmpDefaultPath
-			set ctxBeta to POSIX path of ctxBeta as text
-			set ctxCurrent to POSIX path of ctxCurrent as text
-		end tell
-	end manualPathSelection
-	
-	on reselectCtx()
-		set ctxBeta to ""
-		set ctxCurrent to ""
-		testPaths()
-	end reselectCtx
-	
-	on doTerminal(bashScript)
-		if terminalWinRecycle is true then
-			tell application "Terminal"
-				launch
-				if terminalWinForeground is true then activate
-				set windowCount to (count of the windows)
-				if windowCount is greater than 0 then
-					repeat with w from 1 to windowCount
-						if window 1 is busy or window 1's processes contains "less" then -- Respect also open man pages
-							set frontmost of window 1 to false
-						else
-							do script bashScript in window 1
-							set frontmost of window 1 to true
-							return
-						end if
-					end repeat
-				end if
-				tell window 1
-					do script bashScript
-					set frontmost to true
-				end tell
-			end tell
-		else
-			-- Simple terminal launch with new instance for every typesetting
-			tell application "Terminal"
-				launch
-				do script bashScript
-				if terminalWinForeground is true then activate
-			end tell
-		end if
-	end doTerminal
-	
-	
-	on firstTimeMessage()
-		tell application "System Events"
-			delay 1
-			activate
-			display dialog "Remember, you have these modifier keys at your disposal:" & return & return & "ctrl:" & return & "Main Settings" & return & return & "opt:" & return & "Swap temporarly Normal typesetting mode and Product typesetting mode" & return & return & "shift:" & return & "Swap temporarly PDF viewer auto-launch on/off" & return & return & "opt-shift:" & return & "Swap temporarly terminal mode and standard shell mode" & return & return & "ctrl-opt:" & return & "Register new product file" & return & return & "Hold down the modifier key in addition to your normal hotkey. The ctrl-key will work also when you launch the script with the mouse from the AppleScript menu." & return & return & "You find more information in the ReadMe file." & return & return & "Have fun." buttons {"Yes"} default button 1
-		end tell
-		return
-	end firstTimeMessage
-	
-	on getVersionInfo()
-		try
-			set ctxBetaVersion to do shell script "source " & quoted form of ctxBeta & " && " & cVersionCtx & " ; " & cVersionLua
-			set ctxCurrentVersion to do shell script "source " & quoted form of ctxCurrent & " && " & cVersionCtx & " ; " & cVersionLua
-			tell application "System Events"
-				activate
-				display dialog "Version Info" & return & return & "ConTeXt Beta:" & return & return & ctxBetaVersion & return & return & "ConTeXt Current:" & return & return & ctxCurrentVersion buttons {"Copy to clipboard", "OK"} default button 2
-			end tell
-			if button returned of the result is "Copy to clipboard" then
-				# A more compact form for the clipboard
-				set versionString to ctxBetaVersion & return & ctxCurrentVersion
-				set theFind to {"(ConTeXt):\\s*", "\\r(LuaTeX):\\s*"}
-				set theReplace to {"$1 ", "; $1 "}
-				repeat with i from 1 to number of items in theFind
-					set theText to (NSString's stringWithString:versionString)
-					set versionString to (theText's stringByReplacingOccurrencesOfString:(item i of theFind) withString:(item i of theReplace) options:NSRegularExpressionSearch range:{0, theText's |length|()}) as text
-				end repeat
-				set the clipboard to versionString
-			end if
-		end try
-	end getVersionInfo
-	
-	on synCheck()
-		getFromEditorFirst()
-		fileNameStandardization()
-		filetypeCheck()
-		doTerminal(cSourceCtx & " && " & checkCmd & space & quoted form of fileName)
-	end synCheck
-	
-	on getFilenameForPurging()
-		if (prMode and not tsModeSwap) or (not prMode and tsModeSwap) then
-			if prFile is not "" then
-				set fileName to prFile
 			else
-				getFromFinderOnly()
-				fileNameStandardization()
+				display dialog "Sorry, I couldn’t find any ‘setuptex’ file." & return & return & "If you are sure that ConTeXt is installed on this computer please select the files in the following file selection dialogs." & return & return & "(The ‘setuptex’ file is located in the ‘tex’ folder inside your ConTeXt directory.)" buttons {"Continue…"} default button 1
+				manualPathSelection() of me
 			end if
+			display dialog ¬
+				"The following paths have been set:" & return & return & "ConTeXt Beta:" & return & return & ctxBeta & return & return & "ConTeXt Current:" & return & return & ctxCurrent buttons {"Cancel", "Paths are correct"} default button 2
+			if the button returned of the result is "Cancel" then error number -128
+			set ctxBeta to (ctxBeta as text)
+			set ctxCurrent to (ctxCurrent as text)
+			set myCtx to ctxBeta
+			set cSourceCtx to "source " & quoted form of myCtx
+			set showList to true
+		end try
+	end tell
+end testPaths
+
+on manualPathSelection()
+	tell application "System Events"
+		activate
+		set ctxBeta to choose file with prompt "Please select the ‘setuptex’ file of your ConTeXt Beta directory:" of type {""} default location (path to home folder)
+		try
+			set tmpDefaultPath to POSIX path of container of container of container of ctxBeta
+		on error
+			set tmpDefaultPath to (path to home folder)
+		end try
+		set ctxCurrent to choose file with prompt "Please select the ‘setuptex’ file of your ConTeXt Current directory:" of type {""} default location tmpDefaultPath
+		set ctxBeta to POSIX path of ctxBeta as text
+		set ctxCurrent to POSIX path of ctxCurrent as text
+	end tell
+end manualPathSelection
+
+on reselectCtx()
+	set ctxBeta to ""
+	set ctxCurrent to ""
+	testPaths()
+end reselectCtx
+
+on doTerminal(bashScript)
+	if terminalWinRecycle is true then
+		tell application "Terminal"
+			launch
+			if terminalWinForeground is true then activate
+			set windowCount to (count of the windows)
+			if windowCount is greater than 0 then
+				repeat with w from 1 to windowCount
+					if window 1 is busy or window 1's processes contains "less" then -- Respect also open man pages
+						set frontmost of window 1 to false
+					else
+						do script bashScript in window 1
+						set frontmost of window 1 to true
+						return
+					end if
+				end repeat
+			end if
+			tell window 1
+				do script bashScript
+				set frontmost to true
+			end tell
+		end tell
+	else
+		-- Simple terminal launch with new instance for every typesetting
+		tell application "Terminal"
+			launch
+			do script bashScript
+			if terminalWinForeground is true then activate
+		end tell
+	end if
+end doTerminal
+
+
+on firstTimeMessage()
+	tell application "System Events"
+		delay 1
+		activate
+		display dialog "Remember, you have these modifier keys at your disposal:" & return & return & "ctrl:" & return & "Main Settings" & return & return & "opt:" & return & "Swap temporarly Normal typesetting mode and Product typesetting mode" & return & return & "shift:" & return & "Swap temporarly PDF viewer auto-launch on/off" & return & return & "opt-shift:" & return & "Swap temporarly terminal mode and standard shell mode" & return & return & "ctrl-opt:" & return & "Register new product file" & return & return & "Hold down the modifier key in addition to your normal hotkey. The ctrl-key will work also when you launch the script with the mouse from the AppleScript menu." & return & return & "You find more information in the ReadMe file." & return & return & "Have fun." buttons {"Yes"} default button 1
+	end tell
+	return
+end firstTimeMessage
+
+on getVersionInfo()
+	try
+		set ctxBetaVersion to do shell script "source " & quoted form of ctxBeta & " && " & cVersionCtx & " ; " & cVersionLua
+		set ctxCurrentVersion to do shell script "source " & quoted form of ctxCurrent & " && " & cVersionCtx & " ; " & cVersionLua
+		tell application "System Events"
+			activate
+			display dialog "Version Info" & return & return & "ConTeXt Beta:" & return & return & ctxBetaVersion & return & return & "ConTeXt Current:" & return & return & ctxCurrentVersion buttons {"Copy to clipboard", "OK"} default button 2
+		end tell
+		if button returned of the result is "Copy to clipboard" then
+			# A more compact form for the clipboard
+			set versionString to ctxBetaVersion & return & ctxCurrentVersion
+			set theFind to {"(ConTeXt):\\s*", "\\r(LuaTeX):\\s*"}
+			set theReplace to {"$1 ", "; $1 "}
+			repeat with i from 1 to number of items in theFind
+				set theText to (NSString's stringWithString:versionString)
+				set versionString to (theText's stringByReplacingOccurrencesOfString:(item i of theFind) withString:(item i of theReplace) options:NSRegularExpressionSearch range:{0, theText's |length|()}) as text
+			end repeat
+			set the clipboard to versionString
+		end if
+	end try
+end getVersionInfo
+
+on synCheck()
+	getFromEditorFirst()
+	fileNameStandardization()
+	filetypeCheck()
+	doTerminal(cSourceCtx & " && " & checkCmd & space & quoted form of fileName)
+end synCheck
+
+on getFilenameForPurging()
+	if (prMode and not tsModeSwap) or (not prMode and tsModeSwap) then
+		if prFile is not "" then
+			set fileName to prFile
 		else
-			getFromEditorFirst()
+			getFromFinderOnly()
 			fileNameStandardization()
 		end if
-	end getFilenameForPurging
+	else
+		getFromEditorFirst()
+		fileNameStandardization()
+	end if
+end getFilenameForPurging
+
+on purgeNormal()
+	getFilenameForPurging()
+	filetypeCheck()
+	getFileNameComponents()
+	_purgeNormal()
+end purgeNormal
+
+on purgeAll()
+	getFilenameForPurging()
+	filetypeCheck()
+	getFileNameComponents()
+	_purgeAll()
+end purgeAll
+
+on trashPdf()
+	getFilenameForPurging()
+	filetypeCheck()
+	getFileNameComponents()
+	_trashPdf()
+end trashPdf
+
+on trashPdfpurgeNormal()
+	getFilenameForPurging()
+	filetypeCheck()
+	getFileNameComponents()
+	_trashPdf()
+	_purgeNormal()
+end trashPdfpurgeNormal
+
+on trashPdfpurgeAll()
+	getFilenameForPurging()
+	filetypeCheck()
+	getFileNameComponents()
+	_trashPdf()
+	_purgeAll()
+end trashPdfpurgeAll
+
+on _purgeNormal()
+	doTerminal(cSourceCtx & " && cd " & quoted form of fileNameHead & " && " & cPurgeNormal)
+end _purgeNormal
+
+on _purgeAll()
+	doTerminal(cSourceCtx & " && cd " & quoted form of fileNameHead & " && " & cPurgeAll)
+end _purgeAll
+
+on _trashPdf()
+	set pdfNameHead to POSIX file fileNameHead as text
+	tell application "System Events"
+		activate
+		set pdfList to name of every file of the folder pdfNameHead whose name extension is "pdf"
+		set pdfSelection to choose from list pdfList with title "Select PDFs to trash" with prompt "Hold down ⌘ to select multiple files." OK button name "OK" cancel button name "Cancel" multiple selections allowed yes empty selection allowed no
+		if pdfSelection is false then error number -128
+		set pdfTrashed to ""
+		tell application "Finder"
+			repeat with i in pdfSelection
+				move file ((pdfNameHead & ":" & i) as text) to trash
+				set pdfTrashed to pdfTrashed & ", " & i as text
+			end repeat
+		end tell
+		# TODO: At time of writing the above tell block was painfully slow. If this doesn’t improve stay with System Events and use ‘delete’ (which deletes the files).
+		# Using ‘delete’ in the Finder doesn’t help, since it seems to be just an alias for ‘move to trash’.
+		set pdfTrashed to (text items 3 through -1 of pdfTrashed) as text
+		display notification pdfTrashed with title ((count of pdfSelection) as text) & space & "PDFs trashed"
+	end tell
+end _trashPdf
+
+on makeFormatsBeta()
+	doTerminal("source " & ctxBeta & " && " & cCtxFormat)
+end makeFormatsBeta
+
+on makeFormatsCurrent()
+	doTerminal("source " & ctxCurrent & " && " & cCtxFormat)
+end makeFormatsCurrent
+
+on listFontsAll()
+	doTerminal(cSourceCtx & " && " & cListFontsAll)
+end listFontsAll
+
+on updCtx(ctxToUpdate)
+	set ctxVersiondate to do shell script "source " & quoted form of ctxToUpdate & " && " & cVersionCtxDate
+	if ctxVersiondate does not start with "201" or ctxVersiondate does not contain "T" then
+		tell application "System Events" to display alert "Could not get date of installed ConTeXt."
+		error number -128
+	end if
+	if ctxToUpdate is ctxBeta then
+		set updOption to "beta"
+	else
+		set updOption to "current"
+	end if
+	if ctxBeta is not equal to ctxCurrent then
+		set bakName to updOption & "-"
+	else
+		set bakName to ""
+	end if
 	
-	on purgeNormal()
-		getFilenameForPurging()
-		filetypeCheck()
-		getFileNameComponents()
-		_purgeNormal()
-	end purgeNormal
-	
-	on purgeAll()
-		getFilenameForPurging()
-		filetypeCheck()
-		getFileNameComponents()
-		_purgeAll()
-	end purgeAll
-	
-	on trashPdf()
-		getFilenameForPurging()
-		filetypeCheck()
-		getFileNameComponents()
-		_trashPdf()
-	end trashPdf
-	
-	on trashPdfpurgeNormal()
-		getFilenameForPurging()
-		filetypeCheck()
-		getFileNameComponents()
-		_trashPdf()
-		_purgeNormal()
-	end trashPdfpurgeNormal
-	
-	on trashPdfpurgeAll()
-		getFilenameForPurging()
-		filetypeCheck()
-		getFileNameComponents()
-		_trashPdf()
-		_purgeAll()
-	end trashPdfpurgeAll
-	
-	on _purgeNormal()
-		doTerminal(cSourceCtx & " && cd " & quoted form of fileNameHead & " && " & cPurgeNormal)
-	end _purgeNormal
-	
-	on _purgeAll()
-		doTerminal(cSourceCtx & " && cd " & quoted form of fileNameHead & " && " & cPurgeAll)
-	end _purgeAll
-	
-	on _trashPdf()
-		set pdfNameHead to POSIX file fileNameHead as text
-		tell application "System Events"
+	--if backupDir is "" then
+	tell application "System Events"
+		if not (exists folder backupDir) then
 			activate
-			set pdfList to name of every file of the folder pdfNameHead whose name extension is "pdf"
-			set pdfSelection to choose from list pdfList with title "Select PDFs to trash" with prompt "Hold down ⌘ to select multiple files." OK button name "OK" cancel button name "Cancel" multiple selections allowed yes empty selection allowed no
-			if pdfSelection is false then error number -128
-			set pdfTrashed to ""
-			tell application "Finder"
-				repeat with i in pdfSelection
-					move file ((pdfNameHead & ":" & i) as text) to trash
-					set pdfTrashed to pdfTrashed & ", " & i as text
-				end repeat
-			end tell
-			# TODO: At time of writing the above tell block was painfully slow. If this doesn’t improve stay with System Events and use ‘delete’ (which deletes the files).
-			# Using ‘delete’ in the Finder doesn’t help, since it seems to be just an alias for ‘move to trash’.
-			set pdfTrashed to (text items 3 through -1 of pdfTrashed) as text
-			display notification pdfTrashed with title ((count of pdfSelection) as text) & space & "PDFs trashed"
-		end tell
-	end _trashPdf
-	
-	on makeFormatsBeta()
-		doTerminal("source " & ctxBeta & " && " & cCtxFormat)
-	end makeFormatsBeta
-	
-	on makeFormatsCurrent()
-		doTerminal("source " & ctxCurrent & " && " & cCtxFormat)
-	end makeFormatsCurrent
-	
-	on listFontsAll()
-		doTerminal(cSourceCtx & " && " & cListFontsAll)
-	end listFontsAll
-	
-	on updCtx(ctxToUpdate)
-		set ctxVersiondate to do shell script "source " & quoted form of ctxToUpdate & " && " & cVersionCtxDate
-		if ctxVersiondate does not start with "201" or ctxVersiondate does not contain "T" then
-			tell application "System Events" to display alert "Could not get date of installed ConTeXt."
-			error number -128
+			choose folder with prompt "Please select the directory where you want to backup your previous ConTeXt installation to:" default location (path to home folder)
+			set backupDir to (POSIX path of result) as text
 		end if
-		if ctxToUpdate is ctxBeta then
-			set updOption to "beta"
+	end tell
+	--end if
+	set saveTID to AppleScript's text item delimiters
+	set AppleScript's text item delimiters to {"/"}
+	set dirCtx to text items 1 through -3 of ctxToUpdate as text
+	set dirNameCtx to text item -1 of dirCtx
+	if backUpToSameLocation is true then set backupDir to text items 1 through -2 of dirCtx as text
+	set AppleScript's text item delimiters to saveTID
+	if bakComprLevel is 1 then
+		testForBak("tar.gz")
+		if makeNewBak is false then
+			doTerminal("source " & quoted form of ctxToUpdate & " && cd " & quoted form of dirCtx & " && " & cFirstsetupUpdate & " && sh ./first-setup.sh --context=" & updOption & " --engine=luatex --modules=all")
 		else
-			set updOption to "current"
-		end if
-		if ctxBeta is not equal to ctxCurrent then
-			set bakName to updOption & "-"
-		else
-			set bakName to ""
-		end if
-		
-		--if backupDir is "" then
-		tell application "System Events"
-			if not (exists folder backupDir) then
-				activate
-				choose folder with prompt "Please select the directory where you want to backup your previous ConTeXt installation to:" default location (path to home folder)
-				set backupDir to (POSIX path of result) as text
-			end if
-		end tell
-		--end if
-		set saveTID to AppleScript's text item delimiters
-		set AppleScript's text item delimiters to {"/"}
-		set dirCtx to text items 1 through -3 of ctxToUpdate as text
-		set dirNameCtx to text item -1 of dirCtx
-		if backUpToSameLocation is true then set backupDir to text items 1 through -2 of dirCtx as text
-		set AppleScript's text item delimiters to saveTID
-		if bakComprLevel is 1 then
-			testForBak("tar.gz")
-			if makeNewBak is false then
-				doTerminal("source " & quoted form of ctxToUpdate & " && cd " & quoted form of dirCtx & " && " & cFirstsetupUpdate & " && sh ./first-setup.sh --context=" & updOption & " --engine=luatex --modules=all")
-			else
-				trashOldBak("tar.gz")
-				(*
+			trashOldBak("tar.gz")
+			(*
 				doTerminal("tar -czf " & quoted form of backupDir & "/" & quoted form of dirNameCtx & ".ctx-" & bakName & quoted form of ctxVersiondate & ".tar.gz --options='compression-level=2' -C " & quoted form of dirCtx & " . && source " & quoted form of ctxToUpdate & " && cd " & quoted form of dirCtx & " && " & cFirstsetupUpdate & " && sh ./first-setXup.sh --context=" & updOption & " --engine=luatex --modules=all")
 *)
-				doTerminal("cd " & quoted form of dirCtx & " && tar -czf " & quoted form of backupDir & "/" & quoted form of dirNameCtx & ".ctx-" & bakName & quoted form of ctxVersiondate & ".tar.gz --options='compression-level=2' . && source " & quoted form of ctxToUpdate & " && " & cFirstsetupUpdate & " && sh ./first-setup.sh --context=" & updOption & " --engine=luatex --modules=all")
-			end if
-		else if bakComprLevel is 0 then
-			testForBak("tar")
-			if makeNewBak is false then
-				doTerminal("source " & quoted form of ctxToUpdate & " && cd " & quoted form of dirCtx & " && " & cFirstsetupUpdate & " && sh ./first-setup.sh --context=" & updOption & " --engine=luatex --modules=all")
-			else
-				trashOldBak("tar")
-				doTerminal("cd " & quoted form of dirCtx & " && tar -cf " & quoted form of backupDir & "/" & quoted form of dirNameCtx & ".ctx-" & bakName & quoted form of ctxVersiondate & ".tar . && source " & quoted form of ctxToUpdate & " && " & cFirstsetupUpdate & " && sh ./first-setup.sh --context=" & updOption & " --engine=luatex --modules=all")
-			end if
-		else if bakComprLevel is 2 then
-			testForBak("tar.xz")
-			if makeNewBak is false then
-				doTerminal("source " & quoted form of ctxToUpdate & " && cd " & quoted form of dirCtx & " && " & cFirstsetupUpdate & " && sh ./first-setup.sh --context=" & updOption & " --engine=luatex --modules=all")
-			else
-				trashOldBak("tar.xz")
-				
-				doTerminal("cd " & quoted form of dirCtx & " && tar -cf - . | " & p7z & " a -txz -si -bd -m0=lzma2 -mx=5 -ms=on -mtm=on -mtc=off -mta=off -mmt=on " & quoted form of backupDir & "/" & quoted form of dirNameCtx & ".ctx-" & bakName & quoted form of ctxVersiondate & ".tar.xz && source " & quoted form of ctxToUpdate & " && " & cFirstsetupUpdate & " && sh ./first-setup.sh --context=" & updOption & " --engine=luatex --modules=all")
-				
-				-- "Keep parent folder" version:
-				(*
+			doTerminal("cd " & quoted form of dirCtx & " && tar -czf " & quoted form of backupDir & "/" & quoted form of dirNameCtx & ".ctx-" & bakName & quoted form of ctxVersiondate & ".tar.gz --options='compression-level=2' . && source " & quoted form of ctxToUpdate & " && " & cFirstsetupUpdate & " && sh ./first-setup.sh --context=" & updOption & " --engine=luatex --modules=all")
+		end if
+	else if bakComprLevel is 0 then
+		testForBak("tar")
+		if makeNewBak is false then
+			doTerminal("source " & quoted form of ctxToUpdate & " && cd " & quoted form of dirCtx & " && " & cFirstsetupUpdate & " && sh ./first-setup.sh --context=" & updOption & " --engine=luatex --modules=all")
+		else
+			trashOldBak("tar")
+			doTerminal("cd " & quoted form of dirCtx & " && tar -cf " & quoted form of backupDir & "/" & quoted form of dirNameCtx & ".ctx-" & bakName & quoted form of ctxVersiondate & ".tar . && source " & quoted form of ctxToUpdate & " && " & cFirstsetupUpdate & " && sh ./first-setup.sh --context=" & updOption & " --engine=luatex --modules=all")
+		end if
+	else if bakComprLevel is 2 then
+		testForBak("tar.xz")
+		if makeNewBak is false then
+			doTerminal("source " & quoted form of ctxToUpdate & " && cd " & quoted form of dirCtx & " && " & cFirstsetupUpdate & " && sh ./first-setup.sh --context=" & updOption & " --engine=luatex --modules=all")
+		else
+			trashOldBak("tar.xz")
+			
+			doTerminal("cd " & quoted form of dirCtx & " && tar -cf - . | " & p7z & " a -txz -si -bd -m0=lzma2 -mx=5 -ms=on -mtm=on -mtc=off -mta=off -mmt=on " & quoted form of backupDir & "/" & quoted form of dirNameCtx & ".ctx-" & bakName & quoted form of ctxVersiondate & ".tar.xz && source " & quoted form of ctxToUpdate & " && " & cFirstsetupUpdate & " && sh ./first-setup.sh --context=" & updOption & " --engine=luatex --modules=all")
+			
+			-- "Keep parent folder" version:
+			(*
 				doTerminal("cd " & quoted form of dirCtx & " && tar -cf - -C $(dirname " & quoted form of dirCtx & ") $(basename " & quoted form of dirCtx & ") | " & p7z & " a -txz -si -bd -m0=lzma2 -mx=5 -ms=on -mtm=on -mtc=off -mta=off -mmt=on " & quoted form of backupDir & "/" & quoted form of dirNameCtx & ".ctx-" & bakName & quoted form of ctxVersiondate & ".tar.xz && source " & quoted form of ctxToUpdate & " && " & cFirstsetupUpdate & " && sh ./first-setup.sh --context=" & updOption & " --engine=luatex --modules=all")
 *)
-			end if
 		end if
-	end updCtx
-	
-	on testForBak(bakExt)
-		set makeNewBak to true
-		tell application "System Events"
-			if exists file (backupDir & "/" & dirNameCtx & ".ctx-" & bakName & ctxVersiondate & "." & bakExt) then
-				activate
-				display dialog "There is already a backup of this ConTeXt version. Do you want to replace it with a new one?" buttons {"Keep existing backup", "Move old backup to trash"} default button 1
-				if button returned of result is "Keep existing backup" then set makeNewBak to false
-			end if
+	end if
+end updCtx
+
+on testForBak(bakExt)
+	set makeNewBak to true
+	tell application "System Events"
+		if exists file (backupDir & "/" & dirNameCtx & ".ctx-" & bakName & ctxVersiondate & "." & bakExt) then
+			activate
+			display dialog "There is already a backup of this ConTeXt version. Do you want to replace it with a new one?" buttons {"Keep existing backup", "Move old backup to trash"} default button 1
+			if button returned of result is "Keep existing backup" then set makeNewBak to false
+		end if
+	end tell
+end testForBak
+
+on trashOldBak(bakExt)
+	try
+		tell application "Finder" to move POSIX file (backupDir & "/" & dirNameCtx & ".ctx-" & bakName & ctxVersiondate & "." & bakExt) as text to trash
+	end try
+end trashOldBak
+
+on openDescription()
+	tell application "Finder" to open descrFile
+end openDescription
+
+on doRound(theNumber, thePrecision)
+	return (round (theNumber / thePrecision) ¬
+		rounding as taught in school) * thePrecision
+end doRound
+
+-- For debugging
+on checkFront()
+	tell application "System Events"
+		set currentApp to name of (first application process whose frontmost is true)
+		say currentApp
+	end tell
+end checkFront
+
+on errorSound(soundNumber)
+	if soundNumber is less than 3 then
+		say "oh my god!"
+	else if soundNumber is greater than 2 and soundNumber is less than 6 then
+		say "shit!"
+	else if soundNumber is greater than 5 and soundNumber is less than 10 then
+		say "holy shit!"
+	else if soundNumber is greater than 9 and soundNumber is less than 12 then
+		say "what the fuck?"
+	else if soundNumber is 12 then
+		say "shit! come on!"
+	end if
+end errorSound
+
+on refreshSkim()
+	if pdfViewer is "net.sourceforge.skim-app.skim" then
+		tell application "Skim"
+			--activate
+			set skimPDF to get documents whose path is (fileNameHead & "/" & fileNameRoot & ".pdf")
+			--try
+			if (count of skimPDF) > 0 then revert skimPDF
+			--end try
+			--open skimPDF
 		end tell
-	end testForBak
-	
-	on trashOldBak(bakExt)
-		try
-			tell application "Finder" to move POSIX file (backupDir & "/" & dirNameCtx & ".ctx-" & bakName & ctxVersiondate & "." & bakExt) as text to trash
-		end try
-	end trashOldBak
-	
-	on openDescription()
-		tell application "Finder" to open descrFile
-	end openDescription
-	
-	on doRound(theNumber, thePrecision)
-		return (round (theNumber / thePrecision) ¬
-			rounding as taught in school) * thePrecision
-	end doRound
-	
-	-- For debugging
-	on checkFront()
-		tell application "System Events"
-			set currentApp to name of (first application process whose frontmost is true)
-			say currentApp
-		end tell
-	end checkFront
-	
-	on errorSound(soundNumber)
-		if soundNumber is less than 3 then
-			say "oh my god!"
-		else if soundNumber is greater than 2 and soundNumber is less than 6 then
-			say "shit!"
-		else if soundNumber is greater than 5 and soundNumber is less than 10 then
-			say "holy shit!"
-		else if soundNumber is greater than 9 and soundNumber is less than 12 then
-			say "what the fuck?"
-		else if soundNumber is 12 then
-			say "shit! come on!"
-		end if
-	end errorSound
-	
-	on refreshSkim()
-		if pdfViewer is "net.sourceforge.skim-app.skim" then
-			tell application "Skim"
-				--activate
-				set skimPDF to get documents whose path is (fileNameHead & "/" & fileNameRoot & ".pdf")
-				--try
-				if (count of skimPDF) > 0 then revert skimPDF
-				--end try
-				--open skimPDF
-			end tell
-		end if
-	end refreshSkim
-	
+	end if
+end refreshSkim
+
 on modifierKeyTest()
 	set keyDown to {commandDown:false, optionDown:false, controlDown:false, shiftDown:false}
 	
