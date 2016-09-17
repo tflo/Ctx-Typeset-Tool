@@ -1196,45 +1196,24 @@ Syntax checker says:
 	end _purgeAll
 	
 	on _trashPdf()
-		set otherPdfs to ""
-		set todeletePdfs to ""
-		set countOtherPdfs to 0
-		set countDeletedPdfs to 0
-		set remSize to 0
-		set reclSize to 0
-		--try
-		tell application asocRunner
-			try
-				set otherPdfs to file path from (modify list (file path from (enumerate folder fileNameHead match extensions "pdf") deleting extension yes) subtracting list (file path from (enumerate folder fileNameHead match extensions "tex") deleting extension yes)) adding extension "pdf"
-			end try
-			try
-				if (count of otherPdfs) > 0 then
-					set countOtherPdfs to (count of otherPdfs)
-					repeat with i from 1 to count of otherPdfs
-						set remSize to (remSize + (physical size of (about file item i in otherPdfs)))
-					end repeat
-					set remSize to my doRound((remSize / (1000 * 1000)), 0.1)
-				end if
-			end try
-			try
-				set todeletePdfs to file path from (modify list (file path from (enumerate folder fileNameHead match extensions "pdf") deleting extension yes) intersecting with list (file path from (enumerate folder fileNameHead match extensions "tex") deleting extension yes)) adding extension "pdf"
-			end try
-			try
-				if (count of todeletePdfs) > 0 then
-					set countDeletedPdfs to (count of todeletePdfs)
-					repeat with i from 1 to count of todeletePdfs
-						set reclSize to (reclSize + (physical size of (about file item i in todeletePdfs)))
-					end repeat
-					set reclSize to my doRound((reclSize / (1000 * 1000)), 0.1)
-					manage file todeletePdfs with deleting without finality
-				end if
-			end try
+		set pdfNameHead to POSIX file fileNameHead as text
+		tell application "System Events"
+			activate
+			set pdfList to name of every file of the folder pdfNameHead whose name extension is "pdf"
+			set pdfSelection to choose from list pdfList with title "Select PDFs to trash" with prompt "Hold down ⌘ to select multiple files." OK button name "OK" cancel button name "Cancel" multiple selections allowed yes empty selection allowed no
+			if pdfSelection is false then error number -128
+			set pdfTrashed to ""
+			tell application "Finder"
+				repeat with i in pdfSelection
+					move file ((pdfNameHead & ":" & i) as text) to trash
+					set pdfTrashed to pdfTrashed & ", " & i as text
+				end repeat
+			end tell
+			# TODO: At time of writing the above tell block was painfully slow. If this doesn’t improve stay with System Events and use ‘delete’ (which deletes the files).
+			# Using ‘delete’ in the Finder doesn’t help, since it seems to be just an alias for ‘move to trash’.
+			set pdfTrashed to (text items 3 through -1 of pdfTrashed) as text
+			display notification pdfTrashed with title ((count of pdfSelection) as text) & space & "PDFs trashed"
 		end tell
-		if countDeletedPdfs > 0 then
-			display notification "Kept PDF files: " & countOtherPdfs & " (" & remSize & " MB)" with title "PDF files purged" subtitle "Trashed PDF files: " & countDeletedPdfs & " (" & reclSize & " MB)"
-		else
-			display notification "Kept PDF files: " & countOtherPdfs & " (" & remSize & " MB)" with title "No eligible PDF files found"
-		end if
 	end _trashPdf
 	
 	on makeFormatsBeta()
