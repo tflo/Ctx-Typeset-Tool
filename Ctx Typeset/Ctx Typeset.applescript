@@ -29,16 +29,28 @@ use scripting additions
 ### SETTINGS 
 #############################################
 
-# Please note: If you want to change a setting here that is also present in the Options Window, don’t forget to comment/delete the corresponding line in the Options List section ("mainList") below. Otherwise it will get overridden by the Options Window setting. (E.g. run mode, terminal behavior.)
+# Usually there is no need to change anything here!
+# You can set most options in The Options Window (main window) by holding down the Control key when launching the script.
+#
+# The only options here that are not available through the GUI are the following:
+#
+# Launch delay (delay)
+# Command for the syntax-check script (checkCmd)
+# Compression level for ConTeXt installation backups (bakComprLevel)
+#
+# If you change a setting here that is also available in the Options Window, 
+# don’t forget to comment/delete the corresponding line in the Options List section ("mainList") further below. 
+# Otherwise it will get overridden by the Options Window setting. (For example useJit, product mode, terminal behavior, etc.)
+
 
 
 ## "SETUPTEX" PATHS FOR CTX BETA AND CURRENT 
 
 # If you change/recompile the script often (but why should you do this? ;)
-# you can set here the paths to the "setuptex" files of your 
+# you can “hardcode” here the paths to the "setuptex" files of your 
 # ConTeXt Beta and ConTeXt Current directories, so the search
 # dialog won't pop up after each recompilation:
-
+#
 # Note: Normally it’s not necessary to set the paths here!
 
 property ctxBeta : "/Users/XXX/ConTeXt/Beta/tex/setuptex" -- ConTeXt Beta
@@ -51,18 +63,11 @@ property ctxCurrent : "/Users/XXX/ConTeXt/Current/tex/setuptex" -- ConTeXt Curre
 
 # If you have only one ConTeXt directory set both to the same value
 
+
 property myCtx : ctxBeta
 
 # The script will use the first one by default
 # (This can also be changed in the options screen.)
-
-----------------------------------------------------------------------------------
-
-## LUAJITTEX / LUATEX
-
-# The engine to use (default: LuaTeX)
-
-property useJit : false
 
 ----------------------------------------------------------------------------------
 
@@ -77,6 +82,14 @@ delay 0.6
 
 # Currently I've set a short delay even for the synchronous use of hotkey and modifier keys, 
 # because sometimes I noticed problems wit the proper recognition of modifier keys. (Experimental.)
+
+----------------------------------------------------------------------------------
+
+## LUAJITTEX / LUATEX
+
+# The engine to use (default: LuaTeX)
+
+property useJit : false
 
 ----------------------------------------------------------------------------------
 
