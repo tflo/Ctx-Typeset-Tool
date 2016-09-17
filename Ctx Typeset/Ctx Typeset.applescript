@@ -1257,11 +1257,12 @@ Syntax checker says:
 			end if
 		end tell
 		--end if
-		tell application asocRunner
-			set dirCtx to containing item of (parsed path containing item of (parsed path ctxToUpdate)) as text
-			set dirNameCtx to name of (about file dirCtx)
-			if backUpToSameLocation is true then set backupDir to (containing item of (parsed path dirCtx) as text)
-		end tell
+		set saveTID to AppleScript's text item delimiters
+		set AppleScript's text item delimiters to {"/"}
+		set dirCtx to text items 1 through -3 of ctxToUpdate as text
+		set dirNameCtx to text item -1 of dirCtx
+		if backUpToSameLocation is true then set backupDir to text items 1 through -2 of dirCtx as text
+		set AppleScript's text item delimiters to saveTID
 		if bakComprLevel is 1 then
 			testForBak("tar.gz")
 			if makeNewBak is false then
@@ -1311,7 +1312,7 @@ Syntax checker says:
 	
 	on trashOldBak(bakExt)
 		try
-			tell application asocRunner to manage file (backupDir & "/" & dirNameCtx & ".ctx-" & bakName & ctxVersiondate & "." & bakExt) with deleting without finality
+			tell application "Finder" to move POSIX file (backupDir & "/" & dirNameCtx & ".ctx-" & bakName & ctxVersiondate & "." & bakExt) as text to trash
 		end try
 	end trashOldBak
 	
