@@ -1297,7 +1297,7 @@ on updCtx(ctxToUpdate)
 		else
 			trashOldBak("tar.xz")
 			
-			doTerminal("cd " & quoted form of dirCtx & " && tar -cf - . | " & p7z & " a -txz -si -bd -m0=lzma2 -mx=5 -ms=on -mtm=on -mtc=off -mta=off -mmt=on " & quoted form of backupDir & "/" & quoted form of dirNameCtx & ".ctx-" & bakName & quoted form of ctxVersiondate & ".tar.xz && source " & quoted form of ctxToUpdate & " && " & cFirstsetupUpdate & " && sh ./first-setup.sh --context=" & updOption & " --engine=luatex --modules=all")
+			doTerminal("cd " & quoted form of dirCtx & " && tar -cf - . | " & p7z & " a -txz -si -bd -mx=5 " & quoted form of backupDir & "/" & quoted form of dirNameCtx & ".ctx-" & bakName & quoted form of ctxVersiondate & ".tar.xz && source " & quoted form of ctxToUpdate & " && " & cFirstsetupUpdate & " && sh ./first-setup.sh --context=" & updOption & " --engine=luatex --modules=all")
 			
 			-- "Keep parent folder" version:
 			(*
