@@ -1,23 +1,26 @@
+#
 # Script name: Ctx Typeset Tool
-# What it does: Launches ConTeXt typesetting and provides a GUI for various ConTeXt tools.
+# What it does: Launches ConTeXt typesetting and provides a GUI for various ConTeXt-related tasks.
 # Web page: <http://dflect.net/context-typeset-tool/>
 # Author: Thomas Floeren <ecdltf@mac.com>
-# Version / date: 1.3.0b (65) / 2016-09-17
-# 
+# Created: 2013
+# Last modified: 2016-09-18
+# Version: 1.3.0b (65)
+#
+#
 # Copyright © 2013-2016 Thomas Floeren
 # 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# Permission to use, copy, modify, and/or distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
 # 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-# See the GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with this program. If not, see <http://www.gnu.org/licenses/>.
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+# REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+# AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+# INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+# LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+# OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
 
 
 use framework "Foundation"
@@ -25,9 +28,9 @@ use scripting additions
 
 
 
-#############################################
+################################################################################
 ### SETTINGS 
-#############################################
+################################################################################
 
 # Usually there is no need to change anything here!
 # You can set most options in The Options Window (main window) by holding down the Control key when launching the script.
@@ -69,7 +72,7 @@ property myCtx : ctxBeta
 # The script will use the first one by default
 # (This can also be changed in the options screen.)
 
-----------------------------------------------------------------------------------
+################################################################################
 
 ## LAUNCH DELAY
 
@@ -83,7 +86,7 @@ delay 0.6
 # Currently I've set a short delay even for the synchronous use of hotkey and modifier keys, 
 # because sometimes I noticed problems wit the proper recognition of modifier keys. (Experimental.)
 
-----------------------------------------------------------------------------------
+################################################################################
 
 ## LUAJITTEX / LUATEX
 
@@ -91,7 +94,7 @@ delay 0.6
 
 property useJit : false
 
-----------------------------------------------------------------------------------
+################################################################################
 
 ## PRODUCT MODE
 
@@ -101,7 +104,7 @@ property useJit : false
 
 property prMode : false
 
-----------------------------------------------------------------------------------
+################################################################################
 
 ## PREFERRED PDF VIEWER TO AUTO-LAUNCH
 
@@ -114,13 +117,13 @@ property pdfViewer : "com.apple.Preview"
 # To disable auto-launching of PDF viewer set this to "false":
 property pdfViewerLaunch : true
 
-----------------------------------------------------------------------------------
+################################################################################
 
 ## SyncTex
 
 property syncTex : false
 
-----------------------------------------------------------------------------------
+################################################################################
 
 ## RUN MODE
 
@@ -135,7 +138,7 @@ property terminalMode : false
 # You need to change this only if you don’t use the modifier keys
 # **To swap the modes hold down the *Shift key* at script launch. **
 
-----------------------------------------------------------------------------------
+################################################################################
 
 ## ERROR LOG VIEWER
 
@@ -152,7 +155,7 @@ property logViewerNormal : "Console" -- The standard system log viewer
 property logViewerFinder : "Console" -- The standard system log viewer
 --property logViewerFinder : "Terminal" -- Example
 
-----------------------------------------------------------------------------------
+################################################################################
 
 ## AUTOMATIC SYNTAX CHECK
 
@@ -171,7 +174,7 @@ property checkCmd : "mtxrun --script check" -- newer lua script (mtx-check)
 
 # The checkCmd also applies to manual syntax check
 
-----------------------------------------------------------------------------------
+################################################################################
 
 ## TERMINAL BEHAVIOR
 
@@ -183,7 +186,7 @@ property checkCmd : "mtxrun --script check" -- newer lua script (mtx-check)
 
 property terminalWinRecycle : true
 
-----------------------------------------------------------------------------------
+################################################################################
 
 ## TERMINAL WINDOW BEHAVIOR
 
@@ -195,7 +198,7 @@ property terminalWinRecycle : true
 
 property terminalWinForeground : true
 
-----------------------------------------------------------------------------------
+################################################################################
 
 ## NOTIFICATIONS ON/OFF
 
@@ -204,7 +207,7 @@ property terminalWinForeground : true
 
 property enableNotifications : true
 
-----------------------------------------------------------------------------------
+################################################################################
 
 ## COMPLETION SOUND
 
@@ -217,7 +220,7 @@ property finishSound : "/System/Library/Sounds/Submarine.aiff"
 # To disable completion sound set this to "false":
 property enableSound : true
 
-----------------------------------------------------------------------------------
+################################################################################
 
 ## EXCLUDE GENERATED PDF FROM TIME MACHINE BACKUP
 
@@ -229,7 +232,7 @@ property enableTMexclude : true
 
 # It can be toggled in the main options window.
 
-----------------------------------------------------------------------------------
+################################################################################
 
 ## TOOLS: UPDATE CONTEXT
 
@@ -265,19 +268,17 @@ property backUpToSameLocation : false
 
 property bakComprLevel : 2
 
-----------------------------------------------------------------------------------
+################################################################################
 
 # End of Settings 
-#############################################
+################################################################################
 
 
-------------------------------------------------------------------------------
-------------------------------------------------------------------------------
--- Other variables & properties
-------------------------------------------------------------------------------
-------------------------------------------------------------------------------
+################################################################################
+# Other variables & properties
+################################################################################
 
--- Bundled files
+# Bundled files
 
 property p7z : ""
 --set p7z to (quoted form of POSIX path of (path to resource "bin/7zr")) as text
@@ -286,14 +287,14 @@ property descrFile : ""
 --set descrFile to (path to resource "Manual/Manual.html") as text
 set descrFile to ("/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Typeset/Ctx Typeset.scptd/Contents/Resources/Manual/Manual.html") as text
 
--- Misc
+# Misc
 
 property NSRegularExpressionSearch : a reference to 1024
 property NSString : a reference to current application's NSString
 
 global fileName, fileNameHead, fileNameTail, fileNameRoot, parentFolder, isFromFinder, isFromBBEdit, targetApp, currentEditorFile, showList, dirNameCtx, bakName, ctxVersiondate, makeNewBak, cSourceCtx, tsModeSwap, previousApp, keyDown
 set currentEditorFile to ""
-set fileName to "" -- if not reset previous fileName will be processed even in case of error
+set fileName to ""
 set isFromFinder to false
 set isFromBBEdit to false
 set runModeSwap to false
@@ -311,10 +312,10 @@ property finderSel : ""
 property runCount : 0
 property notSuitable : "[→ No suitable path here. Let me search myself… →]"
 
--- Get frontmost app at script launch time
+# Get frontmost app at script launch time
 tell application "System Events" to set previousApp to name of first process where frontmost is true
 
--- Settings list 
+# Settings list 
 
 set showList to false
 property mainList : ""
@@ -345,7 +346,7 @@ property lHelp : "Help"
 property pdfViewerInventory : {{"Skim", "net.sourceforge.skim-app.skim"}, {"Preview", "com.apple.Preview"}, {"Adobe Acrobat Pro", "com.adobe.Acrobat.Pro"}, {"Adobe Reader", "com.Adobe.Reader"}, {"PDFpenPro", "com.smileonmymac.PDFpenPro"}}
 
 
--- Tools list
+# Tools list
 
 property lVersionInfo : "◼	ConTeXt Version Info"
 property lUpdBeta : "▶	Update ConTeXt Beta (Mk IV)"
@@ -360,7 +361,7 @@ property lPurgeall : "◼◼	Purge All (Ctx Script)"
 property lTrashPdf : "◼◼	Trash Generated PDF Files"
 
 
--- Bash related
+# Bash related
 
 property cPurgeNormal : "mtxrun texutil --purgefiles"
 property cPurgeAll : "mtxrun texutil --purgeallfiles"
@@ -369,56 +370,47 @@ property cVersionLua : "luatex --version | awk 'match($0, /, Version/) {print \"
 property cVersionCtxDate : "context --version  | awk 'match($0, /current version:/) { i = substr($0, RSTART+17) ; gsub(/\\.|:/, \"\", i) ; sub(/ /, \"T\", i) ; print i}'"
 property xattrTMExclusion : "com.apple.metadata:com_apple_backup_excludeItem com.apple.backupd"
 
---property cSourceCtx : "source " & quoted form of myCtx
 set cSourceCtx to "source " & quoted form of myCtx
 property cCtxFormat : "mtxrun --selfupdate ; mtxrun --generate ; context --make cont-en"
 property cListFontsAll : "mtxrun --script fonts --list --all"
 property cFirstsetupUpdate : "rsync -ptv rsync://contextgarden.net/minimals/setup/first-setup.sh ."
 
 
-------------------------------------------------------------------------------
-------------------------------------------------------------------------------
--- Script
-------------------------------------------------------------------------------
-------------------------------------------------------------------------------
+################################################################################
+################################################################################
+# Script
+################################################################################
+################################################################################
 
 testPaths()
 
-------------------------------------------------------------------------------
--- Modifier keys
-------------------------------------------------------------------------------
+################################################################################
+# Modifier keys
+################################################################################
 
 modifierKeyTest()
 
-if keyDown's optionDown and keyDown's controlDown then -- Lock on product file
+# Lock on product file
+if keyDown's optionDown and keyDown's controlDown then
 	regPrFile() of me
 	return
-else if keyDown's shiftDown and keyDown's optionDown then -- Swap run mode (Terminal vs shell)
-	
-	--if not terminalMode then -- Permanent swapping …
-	--	set terminalMode to true
-	--else
-	--	set terminalMode to false
-	
+	# Swap run mode (Terminal vs shell)
+else if keyDown's shiftDown and keyDown's optionDown then
 	set runModeSwap to true -- … or non-permanent swapping(?)
-else if keyDown's shiftDown then -- Swap auto-launching of pdf viewer
+	# Swap auto-launching of pdf viewer
+else if keyDown's shiftDown then
 	set pdfViewerLaunchSwap to true
-else if keyDown's optionDown then -- Swap Product mode (force Finder selection to be typeset)
-	
-	--if not finderOnly then -- Permanent swapping …
-	--	set finderOnly to true
-	--else
-	--	set finderOnly to false
-	
+	# Swap Product mode (force Finder selection to be typeset)
+else if keyDown's optionDown then
 	set tsModeSwap to true -- … or non-permanent swapping(?)
 else if keyDown's controlDown then
 	set showList to true
 end if
 
 
-------------------------------------------------------------------------------
--- Settings list
-------------------------------------------------------------------------------
+################################################################################
+# Settings list
+################################################################################
 
 if showList then
 	
@@ -463,8 +455,6 @@ if showList then
 			lTools, ¬
 			lHelp} ¬
 			with title "Options" with prompt "Hold cmd key ⌘ down to select/deselect multiple entries." OK button name "OK" cancel button name "Cancel" default items mainList multiple selections allowed yes empty selection allowed yes
-		
-		--if the button returned of mainList is "Cancel" then error number -128
 		
 		if mainList contains lCtx then
 			set myCtx to ctxCurrent
@@ -611,65 +601,58 @@ if showList then
 end if
 
 
+################################################################################
+# Getting filename and paths
+################################################################################
 
-------------------------------------------------------------------------------
--- Getting filename and paths
-------------------------------------------------------------------------------
-
--- Getting document
-
+# Getting document
 if (prMode and not tsModeSwap) or (not prMode and tsModeSwap) then
 	if prFile is not "" then
-		set fileName to prFile -- Already POSIX
+		set fileName to prFile
 	else
 		getFromFinderOnly()
 		fileNameStandardization()
 	end if
 	set defactoPrMode to true
 else
-	getFromEditorFirst() -- Getting document from text editor app and then from Finder selection
+	# Getting document from text editor app and then from Finder selection
+	getFromEditorFirst()
 	fileNameStandardization()
 	set defactoPrMode to false
 end if
-
 filetypeCheck()
 
--- Getting file name components
-
+# Getting file name components
 getFileNameComponents()
-
 tell application previousApp to activate
 
-------------------------------------------------------------------------------
--- Other variables for the command string
-------------------------------------------------------------------------------
 
--- PDF viewer 
+################################################################################
+# Other variables for the command string
+################################################################################
+
+# PDF viewer 
 if (pdfViewerLaunch and not pdfViewerLaunchSwap) or (not pdfViewerLaunch and pdfViewerLaunchSwap) then
 	set pdfOpen to " && open -b " & pdfViewer & space & quoted form of fileNameRoot & ".pdf"
 else
 	set pdfOpen to ""
 end if
 
--- Exclude aux files and – optionally – output PDF from Time Machine backup 
+# Exclude aux files and – optionally – output PDF from Time Machine backup 
 if enableTMexclude then
 	set TMExclude to " && xattr -w" & space & xattrTMExclusion & space & quoted form of fileNameRoot & ".pdf" & space & quoted form of fileNameRoot & ".tuc" & space & quoted form of fileNameRoot & ".log && [ ! -f" & space & quoted form of fileNameRoot & ".synctex.gz ] || xattr -w" & space & xattrTMExclusion & space & quoted form of fileNameRoot & ".synctex.gz"
 else
 	set TMExclude to " && xattr -w" & space & xattrTMExclusion & space & quoted form of fileNameRoot & ".tuc" & space & quoted form of fileNameRoot & ".log && [ ! -f" & space & quoted form of fileNameRoot & ".synctex.gz ] || xattr -w" & space & xattrTMExclusion & space & quoted form of fileNameRoot & ".synctex.gz"
 end if
 
-
--- Completion sound 
-
+# Completion sound 
 if enableSound then
 	set makeNoise to " && afplay " & quoted form of finishSound
 else
 	set makeNoise to ""
 end if
 
-
--- Case-specific log viewer
-
+# Case-specific log viewer
 if not isFromFinder then
 	set logViewer to logViewerNormal
 else
@@ -677,8 +660,7 @@ else
 end if
 if logViewer is "Current Editor" then set logViewer to targetApp
 
-
--- Displayed info on ConTeXt installation
+# Displayed info on ConTeXt installation
 if ctxBeta is ctxCurrent then
 	set showCtx to "ConTeXt"
 else if myCtx is ctxBeta then
@@ -693,9 +675,7 @@ else
 	end tell
 end if
 
-
--- Parent item (product folder / component folder in product mode | product file in normal mode)
-
+# Parent item (product folder / component folder in product mode | product file in normal mode)
 if defactoPrMode and prFile is not "" then
 	set {parentItem, showTsMode} to {"ƒ " & prFileFolder, "Product Mode"}
 else if defactoPrMode then
@@ -706,14 +686,10 @@ else
 	set {parentItem, showTsMode} to {"ƒ " & parentFolder, "Normal Mode"}
 end if
 
-
--- Notifications
-
+# Notifications
 set {notificationStart, notificationEnd} to {"", ""}
 
-
--- ConTeXt and options
-
+# ConTeXt and options
 set ctxRun to " && mtxrun --script context --autogenerate "
 
 if (not terminalMode and not runModeSwap) or (terminalMode and runModeSwap) then
@@ -734,21 +710,20 @@ else
 	set optSync to ""
 end if
 
+# Skim refresh
+-- Can’t make this work ATM, so Skim refresh is currently limited to *non-terminal* typesetting mode
+--
+--if pdfViewer is "net.sourceforge.skim-app.skim" then
+--	set pdfName to (fileNameHead & "/" & fileNameRoot & ".pdf")
+--	set skimRefresh to " && osascript -e 'tell application \"Skim\"' -e 'set skimPDF to get documents whose path is " & quoted form of pdfName & "' -e 'if (count of skimPDF) greater than 0 then revert skimPDF' -e 'end tell'"
+--else
+--	set skimRefresh to ""
+--end if
 
--- Skim refresh
--- Can’t make this work ATM, so Skim refresh is currently limited to non-terminal typesetting mode
-(*
-	if pdfViewer is "net.sourceforge.skim-app.skim" then
-		set pdfName to (fileNameHead & "/" & fileNameRoot & ".pdf")
-		set skimRefresh to " && osascript -e 'tell application \"Skim\"' -e 'set skimPDF to get documents whose path is " & quoted form of pdfName & "' -e 'if (count of skimPDF) greater than 0 then revert skimPDF' -e 'end tell'"
-	else
-		set skimRefresh to ""
-	end if
-*)
 
-------------------------------------------------------------------------------
--- Actual Bash command strings
-------------------------------------------------------------------------------
+################################################################################
+# Actual Bash command strings
+################################################################################
 
 set typesetCmd to notificationStart ¬
 	& "ulimit -n 1024 ; " & cSourceCtx ¬
@@ -774,9 +749,9 @@ Syntax checker says:
 set logViewCmd to "cd " & quoted form of fileNameHead & " && open -a  " & logViewer & space & quoted form of fileNameRoot & ".log"
 
 
-------------------------------------------------------------------------------
--- Run
-------------------------------------------------------------------------------
+################################################################################
+# Run
+################################################################################
 
 display notification parentItem & " | " & showTsMode with title showCtx & " | Started ☕️" subtitle quoted form of fileNameTail
 
@@ -784,11 +759,9 @@ if (not terminalMode and not runModeSwap) or (terminalMode and runModeSwap) then
 	try
 		do shell script typesetCmd
 		display notification parentItem & " | " & showTsMode with title showCtx & " | Completed 🍺" subtitle quoted form of fileNameTail
-		
 		# Experimental: Proper Skim reload
 		# Disable "Check for file changes" in Skim's prefs
 		refreshSkim()
-		
 	on error
 		try
 			do shell script logViewCmd
@@ -798,20 +771,16 @@ if (not terminalMode and not runModeSwap) or (terminalMode and runModeSwap) then
 		--error number -128
 		return
 	end try
-	
 else
 	doTerminal(typesetCmd)
 end if
-
 set runCount to (runCount + 1)
 if (runCount = 3) or (runCount = 9) or (runCount = 17) then firstTimeMessage()
 
 
-------------------------------------------------------------------------------
-------------------------------------------------------------------------------
--- Handlers
-------------------------------------------------------------------------------
-------------------------------------------------------------------------------
+################################################################################
+# Handlers
+################################################################################
 
 on getFileNameComponents()
 	set saveTID to AppleScript's text item delimiters
@@ -825,16 +794,16 @@ on getFileNameComponents()
 	return
 end getFileNameComponents
 
--- 1st attempt: Get document from frontmost process
+# 1st attempt: Get document from frontmost process
 on getFromEditor()
 	tell application "System Events"
 		set targetApp to name of (first application process whose frontmost is true)
-		-- As of February 2015 BBEdit 11’s (10’s?)frontmost window is named 'window 2' instead of 'window 1'
-		-- So instead of switching to 'window 2' for BBEdit it is more robust
-		-- to use BBEdit's own AppleScript dictionary
+		# As of February 2015 BBEdit 11’s (10’s?)frontmost window is named 'window 2' instead of 'window 1'
+		# So instead of switching to 'window 2' for BBEdit it is more robust
+		# to use BBEdit's own AppleScript dictionary
 		if targetApp is "BBEdit" then
 			tell application "BBEdit"
-				-- Conditional is needed to preserve the variable in case of failure; Hmm, really?
+				# Conditional is needed to preserve the variable in case of failure; Hmm, really?
 				if name of text document 1 ends with ".tex" then
 					set currentEditorFile to POSIX path of (file of text document 1 as alias)
 					set isFromFinder to false
@@ -844,7 +813,7 @@ on getFromEditor()
 		else
 			try
 				tell application process targetApp
-					-- Conditional is needed to preserve the variable in case of failure; Hmm, really?
+					# Conditional is needed to preserve the variable in case of failure; Hmm, really?
 					if value of attribute "AXDocument" of window 1 ends with ".tex" then
 						set currentEditorFile to value of attribute "AXDocument" of window 1
 						set isFromFinder to false
@@ -856,11 +825,11 @@ on getFromEditor()
 	return
 end getFromEditor
 
--- Fallback in case our editor was pushed away from frontmost position 
--- (e.g. if user compiled the script as application bundle, or by a launcher, …)
+# Fallback in case our editor was pushed away from frontmost position 
+# (e.g. if user compiled the script as application bundle, or by a launcher, …)
 on restoreFrontmostApp()
 	tell application "System Events"
-		-- if we are in Finder chances are high that we went there deliberately …
+		# if we are in Finder chances are high that we went there deliberately …
 		if name of (first application process whose frontmost is true) is not "Finder" then
 			set visible of the first application process whose frontmost is true to false
 			delay 0.7
@@ -868,7 +837,7 @@ on restoreFrontmostApp()
 	end tell
 end restoreFrontmostApp
 
--- 2nd attempt: Get Finder selection
+# 2nd attempt: Get Finder selection
 on getFromFinder()
 	tell application "Finder"
 		--activate
@@ -878,7 +847,7 @@ on getFromFinder()
 				say "oohps"
 				display alert "Please select 1 file." as warning
 				error number -128
-				-- only update  if a tex file is selected; otherwise reuse the last valid selection
+				# only update  if a tex file is selected; otherwise reuse the last valid selection
 			else if (the finderSel as text) ends with ".tex" then
 				set currentFinderFile to the finderSel as text
 				set isFromFinder to true
@@ -908,7 +877,8 @@ on fileNameStandardization()
 		tell frontmost application to set fileName to POSIX path of currentFinderFile
 	else if isFromBBEdit then
 		set fileName to currentEditorFile as text
-	else -- URL to POSIX; for document names obtained through GUI scripting
+		# URL to POSIX; for document names obtained through GUI scripting
+	else
 		try
 			set fileName to urlToPOSIXPath(currentEditorFile) as text
 		end try
@@ -982,8 +952,8 @@ on reregPrFile()
 end reregPrFile
 
 
--- From http://macscripter.net/viewtopic.php?id=14861
--- Modified as in http://stackoverflow.com/questions/9617029/how-to-get-the-a-file-url-in-osx-with-applescript-or-a-shell-script
+# From http://macscripter.net/viewtopic.php?id=14861
+# Modified as in http://stackoverflow.com/questions/9617029/how-to-get-the-a-file-url-in-osx-with-applescript-or-a-shell-script
 -- TODO: Find a better way without Python
 on urlToPOSIXPath(theURL)
 	return do shell script "python -c \"import urllib, urlparse, sys; print (urllib.unquote(urlparse.urlparse(sys.argv[1])[2]))\" " & quoted form of theURL
@@ -1005,7 +975,7 @@ on setPdfViewer()
 	return pdfViewer
 end setPdfViewer
 
--- Test for ConTeXt paths
+# Test for ConTeXt paths
 on testPaths()
 	tell application "System Events"
 		activate
@@ -1084,7 +1054,7 @@ on doTerminal(bashScript)
 			set windowCount to (count of the windows)
 			if windowCount is greater than 0 then
 				repeat with w from 1 to windowCount
-					if window 1 is busy or window 1's processes contains "less" then -- Respect also open man pages
+					if window 1 is busy or window 1's processes contains "less" then -- Necessary?
 						set frontmost of window 1 to false
 					else
 						do script bashScript in window 1
@@ -1099,7 +1069,7 @@ on doTerminal(bashScript)
 			end tell
 		end tell
 	else
-		-- Simple terminal launch with new instance for every typesetting
+		# Simple terminal launch with new instance for every typesetting
 		tell application "Terminal"
 			launch
 			do script bashScript
@@ -1220,8 +1190,8 @@ on _trashPdf()
 				set pdfTrashed to pdfTrashed & ", " & i as text
 			end repeat
 		end tell
-		# TODO: At time of writing the above tell block was painfully slow. If this doesn’t improve stay with System Events and use ‘delete’ (which deletes the files).
-		# Using ‘delete’ in the Finder doesn’t help, since it seems to be just an alias for ‘move to trash’.
+		-- TODO: At time of writing the above tell block was painfully slow. If this doesn’t improve stay with System Events and use ‘delete’ (which deletes the files).
+		-- Using ‘delete’ in the Finder doesn’t help, since it seems to be just an alias for ‘move to trash’.
 		set pdfTrashed to (text items 3 through -1 of pdfTrashed) as text
 		display notification pdfTrashed with title ((count of pdfSelection) as text) & space & "PDFs trashed"
 	end tell
@@ -1255,7 +1225,6 @@ on updCtx(ctxToUpdate)
 	else
 		set bakName to ""
 	end if
-	
 	--if backupDir is "" then
 	tell application "System Events"
 		if not (exists folder backupDir) then
@@ -1333,13 +1302,13 @@ on doRound(theNumber, thePrecision)
 		rounding as taught in school) * thePrecision
 end doRound
 
--- For debugging
-on checkFront()
-	tell application "System Events"
-		set currentApp to name of (first application process whose frontmost is true)
-		say currentApp
-	end tell
-end checkFront
+# For debugging
+--on checkFront()
+--	tell application "System Events"
+--		set currentApp to name of (first application process whose frontmost is true)
+--		say currentApp
+--	end tell
+--end checkFront
 
 on errorSound(soundNumber)
 	if soundNumber is less than 3 then
@@ -1382,7 +1351,3 @@ on modifierKeyTest()
 	
 	return keyDown
 end modifierKeyTest
-
-
--- Old 7z string:
--- p7z & " a -txz -si -bd -m0=lzma2 -mx=9 -ms=on -md=28 -mfb=128 -mtm=on -mtc=off -mta=off -mmt=on "
