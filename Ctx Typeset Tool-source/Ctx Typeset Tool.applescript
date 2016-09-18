@@ -281,11 +281,11 @@ property bakComprLevel : 2
 # Bundled files
 
 property p7z : ""
---set p7z to (quoted form of POSIX path of (path to resource "bin/7zr")) as text
-set p7z to (quoted form of POSIX path of ("/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Typeset/Ctx Typeset.scptd/Contents/Resources/bin/7zr")) as text
+set p7z to (quoted form of POSIX path of (path to resource "bin/7zr")) as text
+set p7z to (quoted form of POSIX path of ("/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Typeset Tool/Ctx Typeset Tool.scptd/Contents/Resources/bin/7zr")) as text
 property descrFile : ""
---set descrFile to (path to resource "Manual/Manual.html") as text
-set descrFile to POSIX file "/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Typeset/Ctx Typeset.scptd/Contents/Resources/Manual/Manual.html" as text
+set descrFile to (path to resource "Manual/Manual.html") as text
+set descrFile to POSIX file "/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Typeset Tool/Ctx Typeset Tool.scptd/Contents/Resources/Manual/Manual.html" as text
 
 # Misc
 

@@ -332,23 +332,23 @@ Help
 Independently from the main settings, some of the options can be changed on 
 the fly by holding down a modifier key at script launch:
 
-opt
+Option
 : Swaps Normal typesetting mode and Product mode. (I.e. if you are in Normal 
   mode you can go temporarly into Product mode by holding this modifier key and
   vice versa.) *Temporarly* means that at next script launch the mode will again
   be as set in the Options screen.
 
-shift
+Shift
 : Toggles auto-launching of the PDF viewer temporarly on/off.
 
-opt-shift
+Shift-Option
 : Toggles temporarly between terminal and standard shell.
 
-ctrl-opt
+Control-Option
 : Register new product file. This is equivalent to the option in the 
   Options screen.
 
-ctrl
+Control
 : **This is the most important key** and rather a meta key, since it opens the
   Options screen which gives you access to all options (and tools) via GUI. 
   Options set via the Options screen are remembered by the script until the 
