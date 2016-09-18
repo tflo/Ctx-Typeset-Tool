@@ -644,15 +644,16 @@ Immediately after the paths dialog the Main Options Window will pop up. Make
 your settings, click OK and launch the script again to start the actual
 typesetting run.
 
+
 # System requirements / other requirements
 
 Of course, a ConTeXt Minimal (standalone) is required.[^texlive]
 
-The script is fully compatible with OS 10.9, 10.10 and 10.11 (Mavericks,
-Yosemite, El Capitan). On older systems notifications won’t work and you should
-disable notifications permanently in the settings section in the script.
+The script is fully compatible with macOS 10.11 and 10.12, probably 10.10 and
+maybe 10.9, 10.8. On 10.8 systems notifications won’t work and you should disable
+notifications permanently in the settings section in the script.
 
-*Python* must be installed (2 or 3) for file URL parsing.
+*Python* must be installed for file URL parsing.
 
 *awk* must be installed for the version query.
 
@@ -660,8 +661,8 @@ If you compile the script as standalone application it should run properly,
 too. However execution will be slower. Not recommended.
 
 **For most tasks it is necessary to enable *Access for assistive devices* in 
-*System Preferences / Security & Privacy / Privacy / Accessibility* (10.9), e.g. 
-for the Finder or your text editor.**
+*System Preferences / Security & Privacy / Privacy / Accessibility*, e.g. 
+for the Finder or for your text editor.**
 
 ---
 
