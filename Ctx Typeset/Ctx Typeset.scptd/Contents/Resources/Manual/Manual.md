@@ -147,29 +147,29 @@ The entries in the options window are pragmatically classified through their
 symbols:
 
 ▷ or ◻︎
-: A *white* symbol indicates a *setting*. Nothing will “happen” when you click 
+: A ***white*** symbol indicates a *setting*. Nothing will “happen” when you click 
   OK, the new setting will be used from the next typesetting run on. (When you
   launch the script again.)
 
 ▶ or ◼︎
-: A *filled* (black) symbol indicates a *command* that will be executed 
+: A ***black*** symbol indicates a *command* that will be executed 
   immediately after closing the options window with *OK*. For example
   *▶ Un-Register Product File* will do so immediately after you hit the OK
   button.
 
 ▷ or ▶
-: A *triangle* indicates a setting/command that will affect the future behavior 
+: A ***triangle*** indicates a setting/command that will affect the future behavior 
   of the script *or* the typesetting result in any way. For example if you
-  select *▷ LuaJitTeX* the script will use LuaJitTeX in future typesetting runs,
+  select *▷ LuaJitTeX* the script will use LuaJitTeX in future typesetting runs,
   until the entry is deselected.
 
 ◻︎ or ◼
-: A *square* indicates a simple command that has nothing to do with the behavior 
+: A ***square*** indicates a simple command that has nothing to do with the behavior 
   of the script and will not change the outcome of future typesettings. For
-  example *◼ Purge all* will just execute the purge command when you hit OK.
+  example *◼ Purge all* will just execute the purge command when you hit OK.
 
 ▶▶ or ◼◼
-: A *doubled* symbol means that the command needs a target. Make sure that the 
+: A ***doubled*** symbol means that the command needs a target. Make sure that the 
   right file is either selected in the Finder or opened in the text editor
   *before* you launch the command. For example *▶▶ Register as New Product File*
   works only while the desired file is Finder-selected or opened in the
