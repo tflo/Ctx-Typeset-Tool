@@ -56,13 +56,13 @@ use scripting additions
 #
 # Note: Normally it’s not necessary to set the paths here!
 
-property ctxBeta : "/Users/XXX/ConTeXt/Beta/tex/setuptex" -- ConTeXt Beta
-property ctxCurrent : "/Users/XXX/ConTeXt/Current/tex/setuptex" -- ConTeXt Current
+--property ctxBeta : "/Users/XXX/ConTeXt/Beta/tex/setuptex" -- ConTeXt Beta
+--property ctxCurrent : "/Users/XXX/ConTeXt/Current/tex/setuptex" -- ConTeXt Current
 # For debugging:
 --property ctxBeta : "/Users/tom/ConTeXt/Beta/tex/setuptex" -- ConTeXt Beta
 --property ctxCurrent : "/Users/tom/ConTeXt/Current/tex/setuptex" -- ConTeXt Current
---property ctxBeta : "/Users/tom/_Tmp ƒ/ConTeXt-test/Beta/tex/setuptex" -- ConTeXt Beta
---property ctxCurrent : "/Users/tom/_Tmp ƒ/ConTeXt-test/Current/tex/setuptex" -- ConTeXt Current
+property ctxBeta : "/Users/tom/_Tmp ƒ/ConTeXt-test/Beta/tex/setuptex" -- ConTeXt Beta
+property ctxCurrent : "/Users/tom/_Tmp ƒ/ConTeXt-test/Current/tex/setuptex" -- ConTeXt Current
 
 # If you have only one ConTeXt directory set both to the same value
 
@@ -285,7 +285,7 @@ property p7z : ""
 set p7z to (quoted form of POSIX path of ("/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Typeset/Ctx Typeset.scptd/Contents/Resources/bin/7zr")) as text
 property descrFile : ""
 --set descrFile to (path to resource "Manual/Manual.html") as text
-set descrFile to ("/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Typeset/Ctx Typeset.scptd/Contents/Resources/Manual/Manual.html") as text
+set descrFile to POSIX file "/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Typeset/Ctx Typeset.scptd/Contents/Resources/Manual/Manual.html" as text
 
 # Misc
 
@@ -877,8 +877,8 @@ on fileNameStandardization()
 		tell frontmost application to set fileName to POSIX path of currentFinderFile
 	else if isFromBBEdit then
 		set fileName to currentEditorFile as text
-		# URL to POSIX; for document names obtained through GUI scripting
 	else
+		# URL to POSIX; for document names obtained through GUI scripting
 		try
 			set fileName to urlToPOSIXPath(currentEditorFile) as text
 		end try
