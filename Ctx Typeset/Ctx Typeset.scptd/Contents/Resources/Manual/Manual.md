@@ -477,6 +477,9 @@ screen can **always** be accessed by holding down the **ctrl** key.* However,
 launching the script with the mouse from the menu bar can become tedious and
 doesn’t allow the simultaneous use of modifier keys (see below).
 
+**See also the note concerning Accessibility in the [**System requirements / other
+requirements**][] section.**
+
 Like any other script the script can also be launched through your preferred
 launcher, like LaunchBar, Keyboard Maestro, Alfred, etc.
 
@@ -600,6 +603,9 @@ maybe 0.2 seconds it happens that modifier keys are not reliably recognized. Bu
 this may depend on the system version, so just play around with the delay so
 that it works best for you.
 
+**If something doesn’t work as expected, please see the note concerning
+Accessibility in the [**System requirements / other requirements**][] section.**
+
 
 ## First run
 
@@ -660,9 +666,13 @@ notifications permanently in the settings section in the script.
 If you compile the script as standalone application it should run properly, 
 too. However execution will be slower. Not recommended.
 
-**For most tasks it is necessary to enable *Access for assistive devices* in 
-*System Preferences / Security & Privacy / Privacy / Accessibility*, e.g. 
-for the Finder or for your text editor.**
+**For most tasks it is necessary to enable *Accessibility rights* in 
+*System Preferences > Security & Privacy > Privacy > Accessibility*, e.g. 
+for the Finder or for your text editor.  
+If you want to launch the script from the Scripts menu (in the menu bar) or from
+FastScripts you have to give Accessibility rights to SystemUIServer.app! (It
+will *not* show you a message window. After the first (failing) launch from the
+Scripts menu open the Preferences Pane and set the checkmark.)**
 
 ---
 
