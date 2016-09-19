@@ -659,8 +659,6 @@ The script is fully compatible with macOS 10.11 and 10.12, probably 10.10 and
 maybe 10.9, 10.8. On 10.8 systems notifications won’t work and you should disable
 notifications permanently in the settings section in the script.
 
-*Python* must be installed for file URL parsing.
-
 *awk* must be installed for the version query.
 
 If you compile the script as standalone application it should run properly, 

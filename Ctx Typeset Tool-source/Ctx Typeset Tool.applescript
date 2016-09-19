@@ -281,10 +281,10 @@ property bakComprLevel : 2
 # Bundled files
 
 property p7z : ""
-set p7z to (quoted form of POSIX path of (path to resource "bin/7zr")) as text
+--set p7z to (quoted form of POSIX path of (path to resource "bin/7zr")) as text
 set p7z to (quoted form of POSIX path of ("/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Typeset Tool/Ctx Typeset Tool.scptd/Contents/Resources/bin/7zr")) as text
 property descrFile : ""
-set descrFile to (path to resource "Manual/Manual.html") as text
+--set descrFile to (path to resource "Manual/Manual.html") as text
 set descrFile to POSIX file "/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Typeset Tool/Ctx Typeset Tool.scptd/Contents/Resources/Manual/Manual.html" as text
 
 # Misc
@@ -880,7 +880,7 @@ on fileNameStandardization()
 	else
 		# URL to POSIX; for document names obtained through GUI scripting
 		try
-			set fileName to urlToPOSIXPath(currentEditorFile) as text
+			set fileName to urlToPOSIXPath(currentEditorFile)
 		end try
 	end if
 	return
@@ -951,19 +951,14 @@ on reregPrFile()
 	return
 end reregPrFile
 
-
-# From http://macscripter.net/viewtopic.php?id=14861
-# Modified as in http://stackoverflow.com/questions/9617029/how-to-get-the-a-file-url-in-osx-with-applescript-or-a-shell-script
--- TODO: Find a better way without Python
 on urlToPOSIXPath(theURL)
-	return do shell script "python -c \"import urllib, urlparse, sys; print (urllib.unquote(urlparse.urlparse(sys.argv[1])[2]))\" " & quoted form of theURL
+	set the urlString to current application's NSString's stringWithString:theURL
+	set the textString to the (urlString's stringByReplacingPercentEscapesUsingEncoding:(current application's NSUTF8StringEncoding)) as string
+	set saveTID to AppleScript's text item delimiters
+	set AppleScript's text item delimiters to {"file://"}
+	return text item -1 of the textString
+	set AppleScript's text item delimiters to saveTID
 end urlToPOSIXPath
-
-(*
-	on urlToPOSIXFile(theURL)
-		return POSIX file urlToPOSIXPath(theURL)
-	end urlToPOSIXFile
-*)
 
 on setPdfViewer()
 	repeat with i in pdfViewerInventory
