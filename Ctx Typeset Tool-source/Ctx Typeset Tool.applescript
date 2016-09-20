@@ -363,8 +363,9 @@ property lTrashPdf : "◼◼	Trash Generated PDF Files"
 
 # Bash related
 
-property cPurgeNormal : "mtxrun texutil --purgefiles"
-property cPurgeAll : "mtxrun texutil --purgeallfiles"
+# texutil needs the UTF-8 setting if the path to ConTeXt contains non-ASCII chars; the other commands are fine w/o it.
+property cPurgeNormal : "export LC_ALL='en_US.UTF-8' && mtxrun texutil --purgefiles"
+property cPurgeAll : "export LC_ALL='en_US.UTF-8' && mtxrun texutil --purgeallfiles"
 property cVersionCtx : "context --version  | awk 'match($0, /current version:/) { print \"ConTeXt: \" substr($0, RSTART+17) }'"
 property cVersionLua : "luatex --version | awk 'match($0, /, Version/) {print \"LuaTeX:   \" substr($0, RSTART+10) }'"
 property cVersionCtxDate : "context --version  | awk 'match($0, /current version:/) { i = substr($0, RSTART+17) ; gsub(/\\.|:/, \"\", i) ; sub(/ /, \"T\", i) ; print i}'"
@@ -1193,11 +1194,11 @@ on _trashPdf()
 end _trashPdf
 
 on makeFormatsBeta()
-	doTerminal("source " & ctxBeta & " && " & cCtxFormat)
+	doTerminal("source " & quoted form of ctxBeta & " && " & cCtxFormat)
 end makeFormatsBeta
 
 on makeFormatsCurrent()
-	doTerminal("source " & ctxCurrent & " && " & cCtxFormat)
+	doTerminal("source " & quoted form of ctxCurrent & " && " & cCtxFormat)
 end makeFormatsCurrent
 
 on listFontsAll()

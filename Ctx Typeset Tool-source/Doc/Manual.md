@@ -662,7 +662,7 @@ notifications permanently in the settings section in the script.
 *awk* must be installed for the version query.
 
 If you compile the script as standalone application it should run properly, 
-too. However execution will be slower. Not recommended.
+too. However execution may be slower. Not recommended.
 
 **For most tasks it is necessary to enable *Accessibility rights* in 
 *System Preferences > Security & Privacy > Privacy > Accessibility*, e.g. 
