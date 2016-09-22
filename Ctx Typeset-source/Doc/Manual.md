@@ -655,8 +655,8 @@ typesetting run.
 
 Of course, a ConTeXt Minimal (standalone) is required.[^texlive]
 
-The script is fully compatible with macOS 10.11 and 10.12, probably 10.10 and
-maybe 10.9, 10.8. On 10.8 systems notifications won’t work and you should disable
+The script is compatible with macOS 10.12 and 10.11, probably 10.10 and maybe
+10.9, 10.8. On pre-10.9 systems notifications won’t work and you should disable
 notifications permanently in the settings section in the script.
 
 *awk* must be installed for the version query.
