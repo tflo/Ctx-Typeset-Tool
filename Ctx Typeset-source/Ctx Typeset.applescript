@@ -26,7 +26,10 @@
 use framework "Foundation"
 use scripting additions
 
-
+### Note to myself: To delete in the compiled script:
+### Debug paths for ConTeXt (~ lines 63)
+### Absolute paths for 7zr (~ lines 286) and enable the relative paths
+### Search for "BEGIN Remove for release version"
 
 ################################################################################
 ### SETTINGS 
@@ -58,11 +61,12 @@ use scripting additions
 
 --property ctxBeta : "/Users/XXX/ConTeXt/Beta/tex/setuptex" -- ConTeXt Beta
 --property ctxCurrent : "/Users/XXX/ConTeXt/Current/tex/setuptex" -- ConTeXt Current
-# For debugging:
---property ctxBeta : "/Users/tom/ConTeXt/Beta/tex/setuptex" -- ConTeXt Beta
---property ctxCurrent : "/Users/tom/ConTeXt/Current/tex/setuptex" -- ConTeXt Current
-property ctxBeta : "/Users/tom/_Tmp ƒ/ConTeXt-test/Beta/tex/setuptex" -- ConTeXt Beta
-property ctxCurrent : "/Users/tom/_Tmp ƒ/ConTeXt-test/Current/tex/setuptex" -- ConTeXt Current
+# BEGIN Remove for release version and uncomment the block above
+property ctxBeta : "/Users/tom/ConTeXt/Beta/tex/setuptex" -- ConTeXt Beta
+property ctxCurrent : "/Users/tom/ConTeXt/Current/tex/setuptex" -- ConTeXt Current
+--property ctxBeta : "/Users/tom/_Tmp ƒ/ConTeXt-test/Beta/tex/setuptex" -- ConTeXt Beta
+--property ctxCurrent : "/Users/tom/_Tmp ƒ/ConTeXt-test/Current/tex/setuptex" -- ConTeXt Current
+# END Remove for release version
 
 # If you have only one ConTeXt directory set both to the same value
 
@@ -281,11 +285,13 @@ property bakComprLevel : 2
 # Bundled files
 
 property p7z : ""
---set p7z to (quoted form of POSIX path of (path to resource "bin/7zr")) as text
-set p7z to (quoted form of POSIX path of ("/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Typeset Tool/Ctx Typeset Tool.scptd/Contents/Resources/bin/7zr")) as text
 property descrFile : ""
+--set p7z to (quoted form of POSIX path of (path to resource "bin/7zr")) as text
 --set descrFile to (path to resource "Manual/Manual.html") as text
+# BEGIN Remove for release version and uncomment the block above
+set p7z to (quoted form of POSIX path of ("/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Typeset Tool/Ctx Typeset Tool.scptd/Contents/Resources/bin/7zr")) as text
 set descrFile to POSIX file "/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Typeset Tool/Ctx Typeset Tool.scptd/Contents/Resources/Manual/Manual.html" as text
+# END Remove for release version
 
 # Misc
 
