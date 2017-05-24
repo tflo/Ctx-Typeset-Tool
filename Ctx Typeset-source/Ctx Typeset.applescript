@@ -376,6 +376,10 @@ property cVersionCtx : "context --version  | awk 'match($0, /current version:/) 
 property cVersionLua : "luatex --version | awk 'match($0, /, Version/) {print \"LuaTeX:   \" substr($0, RSTART+10) }'"
 property cVersionCtxDate : "context --version  | awk 'match($0, /current version:/) { i = substr($0, RSTART+17) ; gsub(/\\.|:/, \"\", i) ; sub(/ /, \"T\", i) ; print i}'"
 property xattrTMExclusion : "com.apple.metadata:com_apple_backup_excludeItem com.apple.backupd"
+# NOTE: Tried to change this to 'tmutil addexclusion', which in theory is preferable (more portable).
+# But it poses two kind of problems:
+# - Doesn't accept relative paths (not really a problem).
+# - Throws a misterious error, maybe because the target file was to recently created or is beeing opened by the PDF viewer.
 
 set cSourceCtx to "source " & quoted form of myCtx
 property cCtxFormat : "mtxrun --selfupdate ; mtxrun --generate ; context --make cont-en"
