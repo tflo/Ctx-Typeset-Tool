@@ -4,11 +4,11 @@
 # Web page: <http://dflect.net/context-typeset-tool/>
 # Author: Thomas Floeren <ecdltf@mac.com>
 # Created: 2013
-# Last modified: 2016-09-18
-# Version: 1.3.0b (65)
+# Last modified: 2017-05-24
+# Version: 1.3.0 (67)
 #
 #
-# Copyright © 2013-2016 Thomas Floeren
+# Copyright © 2013-2017 Thomas Floeren
 # 
 # Permission to use, copy, modify, and/or distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -53,7 +53,7 @@ use scripting additions
 ## "SETUPTEX" PATHS FOR CTX BETA AND CURRENT 
 
 # If you change/recompile the script often (but why should you do this? ;)
-# you can “hardcode” here the paths to the "setuptex" files of your 
+# you can hardcode here the paths to the "setuptex" files of your 
 # ConTeXt Beta and ConTeXt Current directories, so the search
 # dialog won't pop up after each recompilation:
 #
@@ -85,7 +85,7 @@ property myCtx : ctxBeta
 # doesn’t work with the option or shift key – you can set a longer delay 
 # that allows you to press a modifier key comfortably after script launch, e.g. 1 or 1.5 sec.
 
-delay 0.6
+delay 0.5
 
 # Currently I've set a short delay even for the synchronous use of hotkey and modifier keys, 
 # because sometimes I noticed problems wit the proper recognition of modifier keys. (Experimental.)
