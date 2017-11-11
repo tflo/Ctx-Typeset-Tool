@@ -379,12 +379,12 @@ property cPurgeAll : "export LC_ALL='en_US.UTF-8' && mtxrun texutil --purgeallfi
 property cVersionCtx : "context --version  | awk 'match($0, /current version:/) { print \"ConTeXt: \" substr($0, RSTART+17) }'"
 property cVersionLua : "luatex --version | awk 'match($0, /, Version/) {print \"LuaTeX:   \" substr($0, RSTART+10) }'"
 property cVersionCtxDate : "context --version  | awk 'match($0, /current version:/) { i = substr($0, RSTART+17) ; gsub(/\\.|:/, \"\", i) ; sub(/ /, \"T\", i) ; print i}'"
-property xattrTMExclusion : "com.apple.metadata:com_apple_backup_excludeItem com.apple.backupd"
 
 set cSourceCtx to "source " & quoted form of myCtx
 property cCtxFormat : "mtxrun --selfupdate ; mtxrun --generate ; context --make cont-en"
 property cListFontsAll : "mtxrun --script fonts --list --all"
 property cFirstsetupUpdate : "rsync -ptv rsync://contextgarden.net/minimals/setup/first-setup.sh ."
+property TMExclusionCmd : "tmutil addexclusion"
 
 
 ################################################################################
@@ -649,11 +649,13 @@ else
 	set pdfOpen to ""
 end if
 
-# Exclude aux files and – optionally – output PDF from Time Machine backup 
+# Exclude auxiliary files and – optionally – output PDF from Time Machine backup 
+set TMExcludeAuxArg to quoted form of fileNameRoot & ".tuc" & space & quoted form of fileNameRoot & ".log && [ ! -f" & space & quoted form of fileNameRoot & ".synctex.gz ] ||" & space & TMExclusionCmd & space & quoted form of fileNameRoot & ".synctex.gz"
+set TMExcludePDFArg to quoted form of fileNameRoot & ".pdf"
 if enableTMexclude then
-	set TMExclude to " && xattr -w" & space & xattrTMExclusion & space & quoted form of fileNameRoot & ".pdf" & space & quoted form of fileNameRoot & ".tuc" & space & quoted form of fileNameRoot & ".log && [ ! -f" & space & quoted form of fileNameRoot & ".synctex.gz ] || xattr -w" & space & xattrTMExclusion & space & quoted form of fileNameRoot & ".synctex.gz"
+	set TMExclude to space & "&&" & space & TMExclusionCmd & space & TMExcludePDFArg & space & TMExcludeAuxArg
 else
-	set TMExclude to " && xattr -w" & space & xattrTMExclusion & space & quoted form of fileNameRoot & ".tuc" & space & quoted form of fileNameRoot & ".log && [ ! -f" & space & quoted form of fileNameRoot & ".synctex.gz ] || xattr -w" & space & xattrTMExclusion & space & quoted form of fileNameRoot & ".synctex.gz"
+	set TMExclude to space & "&&" & space & TMExclusionCmd & space & TMExcludeAuxArg
 end if
 
 # Completion sound 
