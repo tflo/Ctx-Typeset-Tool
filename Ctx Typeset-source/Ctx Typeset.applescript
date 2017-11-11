@@ -31,6 +31,19 @@ use scripting additions
 ### Absolute paths for 7zr (~ lines 286) and enable the relative paths
 ### Search for ">>> BEGIN"
 
+set theDefaults to current application's NSUserDefaults's alloc()'s initWithSuiteName:"net.dflect.CtxTypesetTool"
+theDefaults's registerDefaults:{runDelay:"0.5", ctxBeta:"/Users/XXX/ConTeXt/Beta/tex/setuptex", ctxCurrent:"/Users/XXX/ConTeXt/Current/tex/setuptex", useJit:false, prMode:false, pdfViewer:"com.apple.Preview", pdfViewerLaunch:true, syncTex:false, terminalMode:false, logViewerNormal:"Console", logViewerFinder:"Console", autoSyntaxCheck:true, checkCmd:"mtxrun --script check", terminalWinRecycle:true, terminalWinForeground:true, enableNotifications:true, finishSound:"/System/Library/Sounds/Submarine.aiff", enableSound:true, enableTMexclude:true, backupDir:"", backUpToSameLocation:false, bakComprLevel:2, p7z:"", descrFile:"", }
+
+set runDelay to runDelay of theDefaults as number
+set ctxBeta to ctxBeta of theDefaults as text
+set ctxCurrent to ctxCurrent of theDefaults as text
+set runDelay to runDelay of theDefaults as number
+set runDelay to runDelay of theDefaults as number
+set runDelay to runDelay of theDefaults as number
+set runDelay to runDelay of theDefaults as number
+set runDelay to runDelay of theDefaults as number
+set runDelay to runDelay of theDefaults as number
+
 ################################################################################
 ### SETTINGS 
 ################################################################################
@@ -73,21 +86,21 @@ property ctxCurrent : "/Users/tom/ConTeXt/Current/tex/setuptex" -- ConTeXt Curre
 # If you have only one ConTeXt directory set both to the same value
 
 
-property myCtx : ctxBeta
+set myCtx to ctxBeta
 
 # The script will use the first one by default
 # (This can also be changed in the options screen.)
 
 ################################################################################
 
-## LAUNCH DELAY
+## LAUNCH (RUN) DELAY
 
 # If you are launching the script in a way that doesn’t allow the use of certain 
 # modifier keys – e.g. launching it from the Script menu in the menu bar 
 # doesn’t work with the option or shift key – you can set a longer delay 
 # that allows you to press a modifier key comfortably after script launch, e.g. 1 or 1.5 sec.
 
-delay 0.5
+set delay to runDelay
 
 # Currently I've set a short delay even for the synchronous use of hotkey and modifier keys, 
 # because sometimes I noticed problems wit the proper recognition of modifier keys. (Experimental.)
