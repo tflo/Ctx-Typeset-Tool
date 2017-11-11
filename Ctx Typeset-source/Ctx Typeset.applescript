@@ -29,7 +29,7 @@ use scripting additions
 ### Note to myself: To delete in the compiled script:
 ### Debug paths for ConTeXt (~ lines 63)
 ### Absolute paths for 7zr (~ lines 286) and enable the relative paths
-### Search for "BEGIN Remove for release version"
+### Search for ">>> BEGIN"
 
 ################################################################################
 ### SETTINGS 
@@ -59,14 +59,16 @@ use scripting additions
 #
 # Note: Normally it’s not necessary to set the paths here!
 
+## >>> BEGIN Uncomment in release version >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 --property ctxBeta : "/Users/XXX/ConTeXt/Beta/tex/setuptex" -- ConTeXt Beta
 --property ctxCurrent : "/Users/XXX/ConTeXt/Current/tex/setuptex" -- ConTeXt Current
-# BEGIN Remove for release version and uncomment the block above
+## <<< END Uncomment in release version <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+## >>> BEGIN Remove in release version >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 property ctxBeta : "/Users/tom/ConTeXt/Beta/tex/setuptex" -- ConTeXt Beta
 property ctxCurrent : "/Users/tom/ConTeXt/Current/tex/setuptex" -- ConTeXt Current
 --property ctxBeta : "/Users/tom/_Tmp ƒ/ConTeXt-test/Beta/tex/setuptex" -- ConTeXt Beta
 --property ctxCurrent : "/Users/tom/_Tmp ƒ/ConTeXt-test/Current/tex/setuptex" -- ConTeXt Current
-# END Remove for release version
+## <<< END Remove in release version <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 # If you have only one ConTeXt directory set both to the same value
 
@@ -286,12 +288,14 @@ property bakComprLevel : 2
 
 property p7z : ""
 property descrFile : ""
+## >>> BEGIN Uncomment in release version >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 --set p7z to (quoted form of POSIX path of (path to resource "bin/7zr")) as text
 --set descrFile to (path to resource "Manual/Manual.html") as text
-# BEGIN Remove for release version and uncomment the block above
+## <<< END Uncomment in release version <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+## >>> BEGIN Remove in release version >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 set p7z to (quoted form of POSIX path of ("/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Typeset Tool/Ctx Typeset.scptd/Contents/Resources/bin/7zr")) as text
 set descrFile to POSIX file "/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Typeset Tool/Ctx Typeset Tool.scptd/Contents/Resources/Manual/Manual.html" as text
-# END Remove for release version
+## <<< END Remove in release version <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 # Misc
 
@@ -376,10 +380,6 @@ property cVersionCtx : "context --version  | awk 'match($0, /current version:/) 
 property cVersionLua : "luatex --version | awk 'match($0, /, Version/) {print \"LuaTeX:   \" substr($0, RSTART+10) }'"
 property cVersionCtxDate : "context --version  | awk 'match($0, /current version:/) { i = substr($0, RSTART+17) ; gsub(/\\.|:/, \"\", i) ; sub(/ /, \"T\", i) ; print i}'"
 property xattrTMExclusion : "com.apple.metadata:com_apple_backup_excludeItem com.apple.backupd"
-# NOTE: Tried to change this to 'tmutil addexclusion', which in theory is preferable (more portable).
-# But it poses two kind of problems:
-# - Doesn't accept relative paths (not really a problem).
-# - Throws a misterious error, maybe because the target file was to recently created or is beeing opened by the PDF viewer.
 
 set cSourceCtx to "source " & quoted form of myCtx
 property cCtxFormat : "mtxrun --selfupdate ; mtxrun --generate ; context --make cont-en"
