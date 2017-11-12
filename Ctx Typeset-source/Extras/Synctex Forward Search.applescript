@@ -12,7 +12,7 @@
 
 -- Make sure there is a product line in the component's first lines, for example "\product  prd_p3_de_E5". The name must not contain spaces.
 
--- Works from within subcomponents (\readjobfile… etc.) that are in a different folder, only if subcomponent and product file are in an open BBEdit project.
+-- Works from within subcomponents (\readjobfile‚Ä¶ etc.) that are in a different folder, only if subcomponent and product file are in an open BBEdit project.
 
 --------------------------------------------------------------------------------
 -- VARIABLES
