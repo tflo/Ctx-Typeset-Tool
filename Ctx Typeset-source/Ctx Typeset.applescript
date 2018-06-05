@@ -5,8 +5,8 @@
 # Author: Thomas Floeren <ecdltf@mac.com>
 # Created: 2013
 # Last modified: 2017-05-24
-# Version: 1.3.0 (67)
-#
+# Version: 2.0.0b1 (68)
+# ü
 #
 # Copyright © 2013-2017 Thomas Floeren
 # 
@@ -26,296 +26,344 @@
 use framework "Foundation"
 use scripting additions
 
-### Note to myself: To delete in the compiled script:
-### Debug paths for ConTeXt (~ lines 63)
-### Absolute paths for 7zr (~ lines 286) and enable the relative paths
-### Search for ">>> BEGIN"
 
 set theDefaults to current application's NSUserDefaults's alloc()'s initWithSuiteName:"net.dflect.CtxTypesetTool"
-theDefaults's registerDefaults:{runDelay:"0.5", ctxBeta:"/Users/XXX/ConTeXt/Beta/tex/setuptex", ctxCurrent:"/Users/XXX/ConTeXt/Current/tex/setuptex", useJit:false, prMode:false, pdfViewer:"com.apple.Preview", pdfViewerLaunch:true, syncTex:false, terminalMode:false, logViewerNormal:"Console", logViewerFinder:"Console", autoSyntaxCheck:true, checkCmd:"mtxrun --script check", terminalWinRecycle:true, terminalWinForeground:true, enableNotifications:true, finishSound:"/System/Library/Sounds/Submarine.aiff", enableSound:true, enableTMexclude:true, backupDir:"", backUpToSameLocation:false, bakComprLevel:2, p7z:"", descrFile:"", }
 
-set runDelay to runDelay of theDefaults as number
+theDefaults's registerDefaults:{ctxBeta:"", ctxCurrent:"", mainList:"", myCtx:"", useJit:false, prMode:false, pdfViewer:"com.apple.Preview", pdfViewerList:"Preview", pdfViewerLaunch:true, syncTex:false, terminalMode:false, logViewerNormal:"Console", logViewerFinder:"Console", autoSyntaxCheck:true, terminalWinRecycle:true, terminalWinForeground:true, enableNotifications:true, enableSound:true, enableTMexclude:true, backupDir:"", backUpToSameLocation:false} ¬
+	
+# The old globals
+global fileName, fileNameHead, fileNameTail, fileNameRoot, parentFolder, isFromFinder, isFromBBEdit, targetApp, currentEditorFile, showList, dirNameCtx, bakName, ctxVersiondate, makeNewBak, cSourceCtx, tsModeSwap, previousApp, keyDown
+
+# New globals from User Defaults
+global ctxBeta, ctxCurrent, useJit, prMode, pdfViewer, pdfViewerLaunch, syncTex, terminalMode, logViewerNormal, logViewerFinder, autoSyntaxCheck, checkCmd, terminalWinRecycle, terminalWinForeground, enableNotifications, finishSound, enableSound, enableTMexclude, backupDir, backUpToSameLocation, bakComprLevel, p7z, descrFile
+
+# Meta
+global theDefaults, mainList, pdfViewerList, toolsList
+
+
 set ctxBeta to ctxBeta of theDefaults as text
 set ctxCurrent to ctxCurrent of theDefaults as text
-set runDelay to runDelay of theDefaults as number
-set runDelay to runDelay of theDefaults as number
-set runDelay to runDelay of theDefaults as number
-set runDelay to runDelay of theDefaults as number
-set runDelay to runDelay of theDefaults as number
-set runDelay to runDelay of theDefaults as number
+
+set mainList to mainList of theDefaults as list
+set pdfViewerList to pdfViewerList of theDefaults as list
+
+set myCtx to myCtx of theDefaults as text
+set useJit to useJit of theDefaults as boolean
+set prMode to prMode of theDefaults as boolean
+set pdfViewer to pdfViewer of theDefaults as text
+set pdfViewerLaunch to pdfViewerLaunch of theDefaults as boolean
+set syncTex to syncTex of theDefaults as boolean
+set terminalMode to terminalMode of theDefaults as boolean
+set logViewerNormal to logViewerNormal of theDefaults as text
+set logViewerFinder to logViewerFinder of theDefaults as text
+set autoSyntaxCheck to autoSyntaxCheck of theDefaults as boolean
+set terminalWinRecycle to terminalWinRecycle of theDefaults as boolean
+set terminalWinForeground to terminalWinForeground of theDefaults as boolean
+set enableNotifications to enableNotifications of theDefaults as boolean
+set enableSound to enableSound of theDefaults as boolean
+set enableTMexclude to enableTMexclude of theDefaults as boolean
+set backupDir to backupDir of theDefaults as text
+set backUpToSameLocation to backUpToSameLocation of theDefaults as boolean
+
 
 ################################################################################
-### SETTINGS 
+# EXPLANATION OF THE VARIABLES (DEFAULT SETTINGS) 
 ################################################################################
-
+#
 # Usually there is no need to change anything here!
 # You can set most options in The Options Window (main window) by holding down the Control key when launching the script.
 #
-# The only options here that are not available through the GUI are the following:
+# The only variables that are not available through the GUI are the following;
+# you can set them here.
 #
-# Launch delay (delay)
-# Command for the syntax-check script (checkCmd)
-# Compression level for ConTeXt installation backups (bakComprLevel)
+# Run delay
+set runDelay to 0.5
 #
-# If you change a setting here that is also available in the Options Window, 
-# don’t forget to comment/delete the corresponding line in the Options List section ("mainList") further below. 
-# Otherwise it will get overridden by the Options Window setting. (For example useJit, product mode, terminal behavior, etc.)
-
-
-
-## "SETUPTEX" PATHS FOR CTX BETA AND CURRENT 
-
-# If you change/recompile the script often (but why should you do this? ;)
-# you can hardcode here the paths to the "setuptex" files of your 
-# ConTeXt Beta and ConTeXt Current directories, so the search
-# dialog won't pop up after each recompilation:
+# Command for the syntax-check script
+set checkCmd to "mtxrun --script check"
 #
-# Note: Normally it’s not necessary to set the paths here!
-
-## >>> BEGIN Uncomment in release version >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
---property ctxBeta : "/Users/XXX/ConTeXt/Beta/tex/setuptex" -- ConTeXt Beta
---property ctxCurrent : "/Users/XXX/ConTeXt/Current/tex/setuptex" -- ConTeXt Current
-## <<< END Uncomment in release version <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-## >>> BEGIN Remove in release version >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-property ctxBeta : "/Users/tom/ConTeXt/Beta/tex/setuptex" -- ConTeXt Beta
-property ctxCurrent : "/Users/tom/ConTeXt/Current/tex/setuptex" -- ConTeXt Current
---property ctxBeta : "/Users/tom/_Tmp ƒ/ConTeXt-test/Beta/tex/setuptex" -- ConTeXt Beta
---property ctxCurrent : "/Users/tom/_Tmp ƒ/ConTeXt-test/Current/tex/setuptex" -- ConTeXt Current
-## <<< END Remove in release version <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-# If you have only one ConTeXt directory set both to the same value
-
-
-set myCtx to ctxBeta
-
-# The script will use the first one by default
-# (This can also be changed in the options screen.)
-
+# The sound file for the completion sound
+set finishSound to "/System/Library/Sounds/Submarine.aiff"
+#
+# Compression level for ConTeXt installation backups
+set bakComprLevel to 2
+#
+#
+# The value in brackets show the default value used by the program:
+#
+(*
 ################################################################################
-
-## LAUNCH (RUN) DELAY
-
-# If you are launching the script in a way that doesn’t allow the use of certain 
-# modifier keys – e.g. launching it from the Script menu in the menu bar 
-# doesn’t work with the option or shift key – you can set a longer delay 
-# that allows you to press a modifier key comfortably after script launch, e.g. 1 or 1.5 sec.
-
-set delay to runDelay
-
-# Currently I've set a short delay even for the synchronous use of hotkey and modifier keys, 
-# because sometimes I noticed problems wit the proper recognition of modifier keys. (Experimental.)
-
+#
+# ctxBeta, ctxCurrent [""]
+#
+# "setuptex" paths for Ctx Beta and Ctx Current.
+#
+# If you have only one ConTeXt directory both variables should have the same
+# value The script will use the first one by default (This can also be changed
+# in the options screen.)
+#
 ################################################################################
-
-## LUAJITTEX / LUATEX
-
-# The engine to use (default: LuaTeX)
-
-property useJit : false
-
+#
+# runDelay [0.5]
+#
+# The launch (run) delay
+#
+# If you are launching the script in a way that doesn’t allow the use of certain
+# modifier keys – e.g. launching it from the Script menu in the menu bar doesn’t
+# work with the option or shift key – you can set a longer delay that allows you
+# to press a modifier key comfortably after script launch, e.g. 1 or 1.5 sec.
+#
+# This cannot be set in the GUI! If you want to change it, you have to set it at
+# the beginning of this section.
+#
+# Currently I've set a short delay even for the synchronous use of hotkey and
+# modifier keys, because sometimes I noticed problems wit the proper recognition
+# of modifier keys. (Experimental.)
+#
 ################################################################################
-
-## PRODUCT MODE
-
-# Set this to "true" if you want to typeset always the file you have locked on 
-# **Can be toggled by holding down the *opt key* at script launch. **
-# Not necessary to set this here
-
-property prMode : false
-
+#
+# useJit [false]
+#
+# If the luajittex engine should be used. Otherwise: luatex
+#
 ################################################################################
-
-## PREFERRED PDF VIEWER TO AUTO-LAUNCH
-
---property pdfViewer : "net.sourceforge.skim-app.skim"
-property pdfViewer : "com.apple.Preview"
---property pdfViewer : "com.adobe.Acrobat.Pro"
---property pdfViewer : "com.Adobe.Reader"
---property pdfViewer : "com.smileonmymac.PDFpenPro"
-
-# To disable auto-launching of PDF viewer set this to "false":
-property pdfViewerLaunch : true
-
+#
+# prMode [false] 
+#
+# Product mode or Normal mode.
+#
+# Can be toggled by holding down the option key at script launch.
+#
 ################################################################################
-
-## SyncTex
-
-property syncTex : false
-
+#
+# pdfViewer ["com.apple.Preview"]
+#
+# Preferred pdf viewer to auto-launch
+#
+# Acceptable values:
+# "net.sourceforge.skim-app.skim"
+# "com.apple.Preview"
+# "com.adobe.Acrobat.Pro"
+# "com.Adobe.Reader"
+# "com.smileonmymac.PDFpenPro"
+#
 ################################################################################
-
-## RUN MODE
-
-# Choose if you want to run the typesetting command in the standard shell (sh)
-# or in the terminal. Running it in the shell won’t show you any progress indication
-# but you will be notified upon completion and the log file will be opened
-# if an error occurs. Set terminalMode to false if your terminal shell is not
-# compatible with this script.
-
-property terminalMode : false
-
-# You need to change this only if you don’t use the modifier keys
-# **To swap the modes hold down the *Shift key* at script launch. **
-
+#
+# pdfViewerLaunch [true]
+#
+# If the PDF viewer should be launched automatically.
+#
 ################################################################################
-
-## ERROR LOG VIEWER
-
-# Only applies if Run Mode is *not* set to Terminal
-
-# Choose log viewer (the log will only be shown in case of errors)
-
-# Log viewer if typesetting a document from the editor
---property logViewerNormal : "Current Editor" -- Adaptive: Log opens in your active text editor (the one with the .tex document)
-property logViewerNormal : "Console" -- The standard system log viewer
---property logViewerNormal : "TextWrangler" -- Example
-
-# Log viewer if typesetting the Finder selection
-property logViewerFinder : "Console" -- The standard system log viewer
---property logViewerFinder : "Terminal" -- Example
-
+#
+# syncTex [false]
+#
+# If SyncTeX should be used.
+#
 ################################################################################
-
-## AUTOMATIC SYNTAX CHECK
-
-# Only applies if Run Mode is *not* set to Terminal
-
+#
+# terminalMode [false]
+#
+# This is the run mode.
+#
+# Choose if you want to run the typesetting command in the "hidden" standard
+# shell or in the terminal. Running it in the shell won’t show you any progress
+# indication but you will be notified upon completion and the log file will be
+# opened if an error occurs. 
+# Set terminalMode to false if your terminal shell is not compatible with this
+# script.
+#
+# To quickly swap modes hold down the Shift key at script launch. 
+#
+################################################################################
+#
+# logViewerNormal ["Console"]
+#
+# Log viewer if typesetting a document from the editor (the log will only be
+# shown in case of errors)
+# Only applies if terminalMode is false.
+#
+# Acceptable values:
+#
+# "Console":
+# The standard system log viewer.
+# "Current Editor":
+# Log opens in your active text editor (the one with the .tex document)
+#
+# You can alo set another specific viewer, e.g. "TextWrangler"
+#
+################################################################################
+#
+# logViewerFinder ["Console"]
+#
+# Like above, but log viewer if typesetting the Finder selection
+#
+################################################################################
+#
+# autoSyntaxCheck [true]
+#
+# Automatic syntax check; only applies if terminalMode is false.
+#
 # The script calls automatically ConTeXt’s syntax check 
 # if a typesetting error occurs. The output will be appended to the log file.
-# (this is good for example for detecting missing "}".)
-
-# Set this to "false" if you don’t want it.
-property autoSyntaxCheck : true
-
-# Set your preferred syntax check command
-property checkCmd : "mtxrun --script check" -- newer lua script (mtx-check)
---property checkCmd : "mtxrun --script concheck" -- the older ruby script
-
-# The checkCmd also applies to manual syntax check
-
+# (This is handy for example to detect a missing "}".)
+#
 ################################################################################
-
-## TERMINAL BEHAVIOR
-
-# Only applies if Run Mode is set to Terminal
-
-# Set this to "false" if you want to launch a new terminal window for each typesetting process
-# (Otherwise the frontmost open terminal window will be reused for typesetting;
-# terminal windows that are busy with other processes won’t be touched in either case.)
-
-property terminalWinRecycle : true
-
+#
+# checkCmd ["mtxrun --script check"]
+#
+# Your preferred syntax check command.
+#
+# This cannot be set in the GUI! If you want to change it, you have to set it at
+# the beginning of this section.
+#
+# Examples:
+# "mtxrun --script check": newer lua script (mtx-check)
+# "mtxrun --script concheck": the older ruby script
+#
+# The checkCmd variable also applies to manual syntax check.
+#
 ################################################################################
-
-## TERMINAL WINDOW BEHAVIOR
-
-# Only applies if Run Mode is set to Terminal
-
-# Set this to "true" if you want the typesetting terminal window to come to foreground.
-# Not strictly necessary because you will be notified when typesetting has finished;
-# but probably better if typesetting a nasty document to see immediatly the failure.
-
-property terminalWinForeground : true
-
+#
+# terminalWinRecycle [true]
+#
+# The desired Terminal behavior.
+# Only applies if terminalMode is true.
+#
+# false: if you want to launch a new terminal window for each typesetting
+# process. (If true, the frontmost open terminal window will be reused for
+# typesetting; terminal windows that are busy with other processes won’t be
+# touched in either case.)
+#
 ################################################################################
-
-## NOTIFICATIONS ON/OFF
-
-# Set this to "false" if … 
-# – OS < 10.9
-
-property enableNotifications : true
-
+#
+# terminalWinForeground [true]
+#
+# Terminal window behavior.
+# Only applies if terminalMode is true.
+#
+# true: if you want the typesetting Terminal window to come to the foreground.
+# Not strictly necessary because you will be notified when typesetting has
+# finished; but probably better if typesetting a nasty document, so you can see
+# immediatly the failure.
+#
 ################################################################################
-
-## COMPLETION SOUND
-
-# The sound to play after successful typesetting
-
---property finishSound : "/System/Library/Sounds/Glass.aiff"
-property finishSound : "/System/Library/Sounds/Submarine.aiff"
---property finishSound : "/System/Library/Sounds/Blow.aiff"
-
-# To disable completion sound set this to "false":
-property enableSound : true
-
+#
+# enableNotifications [true]
+#
+# Notifications on/off.
+# Should be disbled if OS < 10.9.
+#
 ################################################################################
-
-## EXCLUDE GENERATED PDF FROM TIME MACHINE BACKUP
-
-property enableTMexclude : true
-
-# Writes the extebded attribute "com.apple.metadata:com_apple_backup_excludeItem com.apple.backupd"
-# to the generated PDF file. Since the generated PDF is reproducible, often very large and changes
-# frequently when you are still working on your source files this is set to true by default.
-
-# It can be toggled in the main options window.
-
+#
+# enableSound [true]
+#
+# If a completion sound should be played after successful typesetting
+#
 ################################################################################
-
-## TOOLS: UPDATE CONTEXT
-
-# Before updating the installed ConTeXt the script will backup your previous, supposedly working, ConTeXt.
-
-# You can set here a default directory where it should save the backup to:
-
---property backupDir : POSIX path of (path to home folder) & "Desktop" -- Current user’s Desktop
---property backupDir : POSIX path of (path to home folder) & "my backup folder/context backups" -- Example: arbitrary folder in current user’s home directory
---property backupDir : "/Users/Shared" -- Example
-property backupDir : ""
-
-# Set this to "true" if you want to backup to the same directory where your ConTeXt lives:
-property backUpToSameLocation : false
-
-# Set here the compression level for the archive of your previous ConTeXt
-
-# Level 0: No compression (tar archive), approx. 240MB
-# Level 1: gzipped archive (tar.gz), approx. 104MB
-# Level 2: lzma compressed archive (tar.xz), approx. 68MB
-
-# All methods are entirely Mac metadata safe (tags, comments, other xattr)
-
+#
+# finishSound ["/System/Library/Sounds/Submarine.aiff"]
+#
+# The sound file to be played as completion sound.
+#
+# This cannot be set in the GUI! If you want to change it, you have to set it at
+# the beginning of this section.
+#
+# Other examples: "/System/Library/Sounds/Glass.aiff",
+# "/System/Library/Sounds/Blow.aiff"
+#
+################################################################################
+#
+# enableTMexclude [true]
+#
+# Excludes the generated PDF from Time Machine backup
+#
+# If true: It writes the extebded attribute
+# "com.apple.metadata:com_apple_backup_excludeItem com.apple.backupd" to the
+# generated PDF file. 
+#
+# Since the generated PDF is reproducible, often very large and frequently
+# changing when you are still working on your source files, this is set to true
+# by default.
+#
+# Can be toggled in the main options window.
+#
+################################################################################
+#
+# backupDir [""]
+#
+# The directory where the script should save the ConTeXt backup when updating
+# the installation. (Before updating the installed ConTeXt the script will
+# backup your previous, supposedly working, ConTeXt.)
+#
+################################################################################
+#
+# backUpToSameLocation [false]
+#
+# If the backup should be written to the same directory where the ConTeXt
+# installtion lives.
+#
+################################################################################
+#
+# bakComprLevel [2]
+#
+# The ompression level for your ConTeXt backup archive.
+#
+# This cannot be set in the GUI! If you want to change it, you have to set it at
+# the beginning of this section.
+#
+# Acceptable values:
+#
+# 0: No compression (tar archive)
+# 1: gzipped archive (tar.gz), approx. 45%
+# 2: lzma compressed archive (tar.xz), approx. 30%
+#
+# All methods are entirely Mac metadata safe (tags, comments, xattr)
+#
 # 0 will be very fast: chosse this if you are going to delete the backup anyway
 # or if you want to compress several archives together afterwards
-
+#
 # 1 is quite fast: should be OK as compromise for most purposes 
-
-# 2 is a bit slower but compresses well: if you guard more than a couple of old versions
-# or if you don’t have disk space to waste (I added this because I prefer this format 
-# personally for longer-time archiving). Compression is multithreaded and takes 
-# about 20s on my Mac Mini.
-
-property bakComprLevel : 2
+#
+# 2 is a bit slower but compresses well: if you guard more than a couple of old
+# versions or if you don’t have disk space to waste. (I added this because I
+# prefer this format personally for longer-time archiving.) Compression runs
+# multithreaded and takes about 20s on a Mac Mini.
+#
+################################################################################
+# END of explanation of the variables (default settings) 
+################################################################################
+*)
 
 ################################################################################
-
-# End of Settings 
-################################################################################
-
-
-################################################################################
-# Other variables & properties
+# Other variables
 ################################################################################
 
 # Bundled files
 
-property p7z : ""
-property descrFile : ""
-## >>> BEGIN Uncomment in release version >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
---set p7z to (quoted form of POSIX path of (path to resource "bin/7zr")) as text
---set descrFile to (path to resource "Manual/Manual.html") as text
-## <<< END Uncomment in release version <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-## >>> BEGIN Remove in release version >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+if ((path to me) as text) ends with ".applescript" then
+	# For the source file
+	set p7z to (quoted form of POSIX path of ("/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Typeset Tool/Ctx Typeset.scptd/Contents/Resources/bin/7zr")) as text
+	set descrFile to POSIX file "/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Typeset Tool/Ctx Typeset Tool.scptd/Contents/Resources/Manual/Manual.html" as text
+else
+	set p7z to (quoted form of POSIX path of (path to resource "bin/7zr")) as text
+	set descrFile to (path to resource "Manual/Manual.html") as text
+end if
+
+if ((path to me) as text) ends with ".applescript" then
+	# For the source file
 set p7z to (quoted form of POSIX path of ("/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Typeset Tool/Ctx Typeset.scptd/Contents/Resources/bin/7zr")) as text
-set descrFile to POSIX file "/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Typeset Tool/Ctx Typeset Tool.scptd/Contents/Resources/Manual/Manual.html" as text
-## <<< END Remove in release version <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+	set descrFile to POSIX file "/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Typeset Tool/Ctx Typeset Tool.scptd/Contents/Resources/Manual/Manual.html" as text
+else
+	set p7z to (quoted form of POSIX path of (path to resource "bin/7zr")) as text
+	set descrFile to (path to resource "Manual/Manual.html") as text
+end if
+
 
 # Misc
 
 property NSRegularExpressionSearch : a reference to 1024
 property NSString : a reference to current application's NSString
 
-global fileName, fileNameHead, fileNameTail, fileNameRoot, parentFolder, isFromFinder, isFromBBEdit, targetApp, currentEditorFile, showList, dirNameCtx, bakName, ctxVersiondate, makeNewBak, cSourceCtx, tsModeSwap, previousApp, keyDown
 set currentEditorFile to ""
 set fileName to ""
 set isFromFinder to false
@@ -325,15 +373,17 @@ set tsModeSwap to false
 set pdfViewerLaunchSwap to false
 set soundNumber to random number from 1 to 12
 
-property currentFinderFile : ""
-property prFile : ""
-property prFileFolder : ""
-property prFileNameTail : ""
-property prevPrFile : ""
-property prevPrFileNameTail : ""
-property finderSel : ""
-property runCount : 0
-property notSuitable : "[→ No suitable path here. Let me search myself… →]"
+global currentFinderFile, prFile, prFileFolder, prFileNameTail, prevPrFile, prevPrFileNameTail, finderSel, runCount, notSuitable
+
+set currentFinderFile to ""
+set prFile to ""
+set prFileFolder to ""
+set prFileNameTail to ""
+set prevPrFile to ""
+set prevPrFileNameTail to ""
+set finderSel to ""
+set runCount to 0
+set notSuitable to "[→ No suitable path here. Let me search myself… →]"
 
 # Get frontmost app at script launch time
 tell application "System Events" to set previousApp to name of first process where frontmost is true
@@ -341,63 +391,66 @@ tell application "System Events" to set previousApp to name of first process whe
 # Settings list 
 
 set showList to false
-property mainList : ""
-property pdfViewerList : ""
-property toolsList : ""
-set toolsList to ""
+--set toolsList to ""
 
-property lCtx : "▷	Use ConTeXt Current (Instead of  Beta)"
-property lJit : "▷	Use LuaJitTeX (Instead of LuaTeX)"
-property lprMode : "▷	Product Mode  ⌥"
-property lRegPrFile : "	▶▶	Register as New Product File  ⌃⌥"
-property lUnregPrFile : ""
-property lReregPrFile : ""
-property lTerminal : "▷	Run Typesetting in Terminal  ⌥⇧"
-property lTerminalNew : " 	▷	New Terminal Window for Each Run"
-property lPdfViewerAuto : "▷	Do not Auto-launch PDF Viewer  ⇧"
-property lPdfViewerChange : "	▶	Set PDF Viewer →"
-property lTerminalBack : "▷	Keep Terminal Windows in Background"
-property lLogViewer : "▷	View Error Logs in Current Text Editor"
-property lAutoSynCheck : "▷	Automatic Syntax Check on Error Off"
-property lNotifications : "▷	Notifications Off"
-property lSound : "▷	Completion Sound Off"
-property lTM : "▷	Don’t Exclude Generated PDF from Backup"
-property lSynctex : "▷	Enforce SyncTeX"
-property lTools : "Tools →"
-property lHelp : "Help"
+global lCtx, lJit, lprMode, lRegPrFile, lUnregPrFile, lReregPrFile, lTerminal, lTerminalNew, lPdfViewerAuto, lPdfViewerChange, lTerminalBack, lLogViewer, lAutoSynCheck, lNotifications, lSound, lTM, lSynctex, lTools, lHelp, pdfViewerInventory
 
-property pdfViewerInventory : {{"Skim", "net.sourceforge.skim-app.skim"}, {"Preview", "com.apple.Preview"}, {"Adobe Acrobat Pro", "com.adobe.Acrobat.Pro"}, {"Adobe Reader", "com.Adobe.Reader"}, {"PDFpenPro", "com.smileonmymac.PDFpenPro"}}
+set lCtx to "▷\tUse ConTeXt Current (Instead of  Beta)"
+set lJit to "▷\tUse LuaJitTeX (Instead of LuaTeX)"
+set lprMode to "▷\tProduct Mode  ⌥"
+set lRegPrFile to "\t▶▶\tRegister as New Product File  ⌃⌥"
+set lUnregPrFile to ""
+set lReregPrFile to ""
+set lTerminal to "▷\tRun Typesetting in Terminal  ⌥⇧"
+set lTerminalNew to " \t▷\tNew Terminal Window for Each Run"
+set lPdfViewerAuto to "▷\tDo not Auto-launch PDF Viewer  ⇧"
+set lPdfViewerChange to "\t▶\tSet PDF Viewer →"
+set lTerminalBack to "▷\tKeep Terminal Windows in Background"
+set lLogViewer to "▷\tView Error Logs in Current Text Editor"
+set lAutoSynCheck to "▷\tAutomatic Syntax Check on Error Off"
+set lNotifications to "▷\tNotifications Off"
+set lSound to "▷\tCompletion Sound Off"
+set lTM to "▷\tDon’t Exclude Generated PDF from Backup"
+set lSynctex to "▷\tEnforce SyncTeX"
+set lTools to "Tools →"
+set lHelp to "Help"
+
+set pdfViewerInventory to {{"Skim", "net.sourceforge.skim-app.skim"}, {"Preview", "com.apple.Preview"}, {"Adobe Acrobat Pro", "com.adobe.Acrobat.Pro"}, {"Adobe Reader", "com.Adobe.Reader"}, {"PDFpenPro", "com.smileonmymac.PDFpenPro"}}
 
 
 # Tools list
 
-property lVersionInfo : "◼	ConTeXt Version Info"
-property lUpdBeta : "▶	Update ConTeXt Beta (Mk IV)"
-property lUpdCurrent : "▶	Update ConTeXt Current (Mk IV)"
-property lSelectNewCtx : "▶	Reassign ConTeXt Installations (Beta/Current Slots)"
-property lMakeFormatsBeta : "◼	Make Formats for ConTeXt Beta (Mk IV)"
-property lMakeFormatsCurrent : "◼	Make Formats for ConTeXt Current (Mk IV)"
-property lListFontsAll : "◼	List All Available Fonts"
-property lManualSynCheck : "◼◼	Syntax Check"
-property lPurge : "◼◼	Purge (Ctx Script)"
-property lPurgeall : "◼◼	Purge All (Ctx Script)"
-property lTrashPdf : "◼◼	Trash Generated PDF Files"
+global lVersionInfo, lUpdBeta, lUpdCurrent, lSelectNewCtx, lMakeFormatsBeta, lMakeFormatsCurrent, lListFontsAll, lManualSynCheck, lPurge, lPurgeall, lTrashPdf
+
+set lVersionInfo to "◼\tConTeXt Version Info"
+set lUpdBeta to "▶\tUpdate ConTeXt Beta (Mk IV)"
+set lUpdCurrent to "▶\tUpdate ConTeXt Current (Mk IV)"
+set lSelectNewCtx to "▶\tReassign ConTeXt Installations (Beta/Current Slots)"
+set lMakeFormatsBeta to "◼\tMake Formats for ConTeXt Beta (Mk IV)"
+set lMakeFormatsCurrent to "◼\tMake Formats for ConTeXt Current (Mk IV)"
+set lListFontsAll to "◼\tList All Available Fonts"
+set lManualSynCheck to "◼◼\tSyntax Check"
+set lPurge to "◼◼\tPurge (Ctx Script)"
+set lPurgeall to "◼◼\tPurge All (Ctx Script)"
+set lTrashPdf to "◼◼\tTrash Generated PDF Files"
 
 
 # Bash related
 
+global cPurgeNormal, cPurgeAll, cVersionCtx, cVersionLua, cVersionCtxDate, xattrTMExclusion, cCtxFormat, cListFontsAll, cFirstsetupUpdate
+
 # texutil needs the UTF-8 setting if the path to ConTeXt contains non-ASCII chars; the other commands are fine w/o it.
-property cPurgeNormal : "export LC_ALL='en_US.UTF-8' && mtxrun texutil --purgefiles"
-property cPurgeAll : "export LC_ALL='en_US.UTF-8' && mtxrun texutil --purgeallfiles"
-property cVersionCtx : "context --version  | awk 'match($0, /current version:/) { print \"ConTeXt: \" substr($0, RSTART+17) }'"
-property cVersionLua : "luatex --version | awk 'match($0, /, Version/) {print \"LuaTeX:   \" substr($0, RSTART+10) }'"
-property cVersionCtxDate : "context --version  | awk 'match($0, /current version:/) { i = substr($0, RSTART+17) ; gsub(/\\.|:/, \"\", i) ; sub(/ /, \"T\", i) ; print i}'"
-property xattrTMExclusion : "com.apple.metadata:com_apple_backup_excludeItem com.apple.backupd"
+set cPurgeNormal to "export LC_ALL='en_US.UTF-8' && mtxrun texutil --purgefiles"
+set cPurgeAll to "export LC_ALL='en_US.UTF-8' && mtxrun texutil --purgeallfiles"
+set cVersionCtx to "context --version  | awk 'match($0, /current version:/) { print \"ConTeXt: \" substr($0, RSTART+17) }'"
+set cVersionLua to "luatex --version | awk 'match($0, /, Version/) {print \"LuaTeX:   \" substr($0, RSTART+10) }'"
+set cVersionCtxDate to "context --version  | awk 'match($0, /current version:/) { i = substr($0, RSTART+17) ; gsub(/\\.|:/, \"\", i) ; sub(/ /, \"T\", i) ; print i}'"
+set xattrTMExclusion to "com.apple.metadata:com_apple_backup_excludeItem com.apple.backupd"
 
 set cSourceCtx to "source " & quoted form of myCtx
-property cCtxFormat : "mtxrun --selfupdate ; mtxrun --generate ; context --make cont-en"
-property cListFontsAll : "mtxrun --script fonts --list --all"
-property cFirstsetupUpdate : "rsync -ptv rsync://contextgarden.net/minimals/setup/first-setup.sh ."
+set cCtxFormat to "mtxrun --selfupdate ; mtxrun --generate ; context --make cont-en"
+set cListFontsAll to "mtxrun --script fonts --list --all"
+set cFirstsetupUpdate to "rsync -ptv rsync://contextgarden.net/minimals/setup/first-setup.sh ."
 
 
 ################################################################################
@@ -411,6 +464,10 @@ testPaths()
 ################################################################################
 # Modifier keys
 ################################################################################
+
+
+# Execute the preset run delay to give time to any modifier key
+delay runDelay
 
 modifierKeyTest()
 
@@ -453,8 +510,8 @@ if showList then
 		set showPrevPrFile to " (" & quoted form of prevPrFileNameTail & ")"
 		
 	end if
-	set lUnregPrFile to " 	▶	Unregister Product File" & showPrFile
-	set lReregPrFile to " 	▶	Re-Register Previous Product File" & showPrevPrFile
+	set lUnregPrFile to " \t▶\tUnregister Product File" & showPrFile
+	set lReregPrFile to " \t▶\tRe-Register Previous Product File" & showPrevPrFile
 	
 	tell application "System Events"
 		activate
@@ -479,7 +536,6 @@ if showList then
 			lTools, ¬
 			lHelp} ¬
 			with title "Options" with prompt "Hold cmd key ⌘ down to select/deselect multiple entries." OK button name "OK" cancel button name "Cancel" default items mainList multiple selections allowed yes empty selection allowed yes
-		
 		if mainList contains lCtx then
 			set myCtx to ctxCurrent
 		else
@@ -562,6 +618,7 @@ if showList then
 				"Adobe Reader", ¬
 				"PDFpenPro"} ¬
 				with title "Choose PDF Viewer" OK button name "OK" cancel button name "Cancel" default items pdfViewerList multiple selections allowed no empty selection allowed no
+			set pdfViewerList of theDefaults to pdfViewerList
 			my setPdfViewer()
 		end if
 		
@@ -611,6 +668,7 @@ if showList then
 			end if
 		end if
 	end tell
+	
 	if (mainList does not contain lTools) or ((mainList contains lTools) and (terminalWinForeground is false)) then tell application previousApp to activate
 	if mainList is false then error number -128
 	# Clean list from selections that shouldn’t be remembered
@@ -621,6 +679,20 @@ if showList then
 			set end of mainList to item i of tmpList
 		end if
 	end repeat
+	set mainList of theDefaults to mainList
+	set myCtx of theDefaults to myCtx
+	set useJit of theDefaults to useJit
+	set prMode of theDefaults to prMode
+	set terminalMode of theDefaults to terminalMode
+	set terminalWinForeground of theDefaults to terminalWinForeground
+	set terminalWinRecycle of theDefaults to terminalWinRecycle
+	set pdfViewerLaunch of theDefaults to pdfViewerLaunch
+	set syncTex of theDefaults to syncTex
+	set logViewerNormal of theDefaults to logViewerNormal
+	set autoSyntaxCheck of theDefaults to autoSyntaxCheck
+	set enableNotifications of theDefaults to enableNotifications
+	set enableSound of theDefaults to enableSound
+	set enableTMexclude of theDefaults to enableTMexclude
 	return
 end if
 
@@ -746,7 +818,7 @@ end if
 
 
 ################################################################################
-# Actual Bash command strings
+# Actual shell command strings
 ################################################################################
 
 set typesetCmd to notificationStart ¬
@@ -762,13 +834,7 @@ set typesetCmd to notificationStart ¬
 	& pdfOpen ¬
 	& TMExclude
 
-set autoCheckCmd to "cd " & quoted form of fileNameHead & " && " & cSourceCtx & " && { printf \"
-
----
-
-Syntax checker says:
-
-\" ; " & checkCmd & space & quoted form of fileNameTail & " ; } >> " & quoted form of fileNameRoot & ".log"
+set autoCheckCmd to "cd " & quoted form of fileNameHead & " && " & cSourceCtx & " && { printf \"\n\n---\n\nSyntax checker says:\n\n\" ; " & checkCmd & space & quoted form of fileNameTail & " ; } >> " & quoted form of fileNameRoot & ".log"
 
 set logViewCmd to "cd " & quoted form of fileNameHead & " && open -a  " & logViewer & space & quoted form of fileNameRoot & ".log"
 
@@ -991,6 +1057,7 @@ on setPdfViewer()
 			exit repeat
 		end if
 	end repeat
+	set pdfViewer of theDefaults to pdfViewer
 	return pdfViewer
 end setPdfViewer
 
@@ -1009,10 +1076,7 @@ on testPaths()
 			set foundSetuptex to do shell script "mdfind -name 'setuptex' | grep  '/tex/setuptex$' ; exit 0"
 			if foundSetuptex is "" then
 				# In case user has disabled Spotlight or file is out of search scope of Spotlight
-				display alert "Deep Search Needed" message "The first search run with Spotlight didn’t yield any results. Now searching with ‘find’ in Home, /Users/Shared, /Applications, /opt, /usr/local and /usr/share. 
-					This may take a few seconds.
-					
-					Press OK to start deep search." buttons {"Cancel", "OK"} default button "OK" cancel button "Cancel"
+				display alert "Deep Search Needed" message "The first search run with Spotlight didn’t yield any results. Now searching with ‘find’ in Home, /Users/Shared, /Applications, /opt, /usr/local and /usr/share. \n\t\t\t\t\tThis may take a few seconds.\n\t\t\t\t\t\n\t\t\t\t\tPress OK to start deep search." buttons {"Cancel", "OK"} default button "OK" cancel button "Cancel"
 				set foundSetuptex to do shell script "find $HOME /Users/Shared /Applications /opt /usr/local /usr/share -name 'setuptex' -maxdepth 6 | grep  '/tex/setuptex$' ; exit 0"
 				-- Is the depth sufficient for nested install locations in ~/Library/ ?
 			end if
@@ -1042,6 +1106,8 @@ on testPaths()
 			set showList to true
 		end try
 	end tell
+	set ctxBeta of theDefaults to ctxBeta
+	set ctxCurrent of theDefaults to ctxCurrent
 end testPaths
 
 on manualPathSelection()
