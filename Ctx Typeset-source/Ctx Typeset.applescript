@@ -6,13 +6,12 @@
 # Created: 2013
 # Last modified: 2017-05-24
 # Version: 2.0.0b1 (68)
-# ü
 #
 # Copyright © 2013-2017 Thomas Floeren
 # 
 # Permission to use, copy, modify, and/or distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
-# copyright notice and this permission notice appear in all copies.
+# copyright notice and this permission notice appear in all copies. 
 # 
 # THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
 # REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
@@ -351,7 +350,7 @@ end if
 
 if ((path to me) as text) ends with ".applescript" then
 	# For the source file
-set p7z to (quoted form of POSIX path of ("/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Typeset Tool/Ctx Typeset.scptd/Contents/Resources/bin/7zr")) as text
+	set p7z to (quoted form of POSIX path of ("/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Typeset Tool/Ctx Typeset.scptd/Contents/Resources/bin/7zr")) as text
 	set descrFile to POSIX file "/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Typeset Tool/Ctx Typeset Tool.scptd/Contents/Resources/Manual/Manual.html" as text
 else
 	set p7z to (quoted form of POSIX path of (path to resource "bin/7zr")) as text
@@ -395,23 +394,23 @@ set showList to false
 
 global lCtx, lJit, lprMode, lRegPrFile, lUnregPrFile, lReregPrFile, lTerminal, lTerminalNew, lPdfViewerAuto, lPdfViewerChange, lTerminalBack, lLogViewer, lAutoSynCheck, lNotifications, lSound, lTM, lSynctex, lTools, lHelp, pdfViewerInventory
 
-set lCtx to "▷\tUse ConTeXt Current (Instead of  Beta)"
-set lJit to "▷\tUse LuaJitTeX (Instead of LuaTeX)"
-set lprMode to "▷\tProduct Mode  ⌥"
-set lRegPrFile to "\t▶▶\tRegister as New Product File  ⌃⌥"
+set lCtx to "▷	Use ConTeXt Current (Instead of  Beta)"
+set lJit to "▷	Use LuaJitTeX (Instead of LuaTeX)"
+set lprMode to "▷	Product Mode  ⌥"
+set lRegPrFile to "	▶▶	Register as New Product File  ⌃⌥"
 set lUnregPrFile to ""
 set lReregPrFile to ""
-set lTerminal to "▷\tRun Typesetting in Terminal  ⌥⇧"
-set lTerminalNew to " \t▷\tNew Terminal Window for Each Run"
-set lPdfViewerAuto to "▷\tDo not Auto-launch PDF Viewer  ⇧"
-set lPdfViewerChange to "\t▶\tSet PDF Viewer →"
-set lTerminalBack to "▷\tKeep Terminal Windows in Background"
-set lLogViewer to "▷\tView Error Logs in Current Text Editor"
-set lAutoSynCheck to "▷\tAutomatic Syntax Check on Error Off"
-set lNotifications to "▷\tNotifications Off"
-set lSound to "▷\tCompletion Sound Off"
-set lTM to "▷\tDon’t Exclude Generated PDF from Backup"
-set lSynctex to "▷\tEnforce SyncTeX"
+set lTerminal to "▷	Run Typesetting in Terminal  ⌥⇧"
+set lTerminalNew to " 	▷	New Terminal Window for Each Run"
+set lPdfViewerAuto to "▷	Do not Auto-launch PDF Viewer  ⇧"
+set lPdfViewerChange to "	▶	Set PDF Viewer →"
+set lTerminalBack to "▷	Keep Terminal Windows in Background"
+set lLogViewer to "▷	View Error Logs in Current Text Editor"
+set lAutoSynCheck to "▷	Automatic Syntax Check on Error Off"
+set lNotifications to "▷	Notifications Off"
+set lSound to "▷	Completion Sound Off"
+set lTM to "▷	Don’t Exclude Generated PDF from Backup"
+set lSynctex to "▷	Enforce SyncTeX"
 set lTools to "Tools →"
 set lHelp to "Help"
 
@@ -422,17 +421,17 @@ set pdfViewerInventory to {{"Skim", "net.sourceforge.skim-app.skim"}, {"Preview"
 
 global lVersionInfo, lUpdBeta, lUpdCurrent, lSelectNewCtx, lMakeFormatsBeta, lMakeFormatsCurrent, lListFontsAll, lManualSynCheck, lPurge, lPurgeall, lTrashPdf
 
-set lVersionInfo to "◼\tConTeXt Version Info"
-set lUpdBeta to "▶\tUpdate ConTeXt Beta (Mk IV)"
-set lUpdCurrent to "▶\tUpdate ConTeXt Current (Mk IV)"
-set lSelectNewCtx to "▶\tReassign ConTeXt Installations (Beta/Current Slots)"
-set lMakeFormatsBeta to "◼\tMake Formats for ConTeXt Beta (Mk IV)"
-set lMakeFormatsCurrent to "◼\tMake Formats for ConTeXt Current (Mk IV)"
-set lListFontsAll to "◼\tList All Available Fonts"
-set lManualSynCheck to "◼◼\tSyntax Check"
-set lPurge to "◼◼\tPurge (Ctx Script)"
-set lPurgeall to "◼◼\tPurge All (Ctx Script)"
-set lTrashPdf to "◼◼\tTrash Generated PDF Files"
+set lVersionInfo to "◼	ConTeXt Version Info"
+set lUpdBeta to "▶	Update ConTeXt Beta (Mk IV)"
+set lUpdCurrent to "▶	Update ConTeXt Current (Mk IV)"
+set lSelectNewCtx to "▶	Reassign ConTeXt Installations (Beta/Current Slots)"
+set lMakeFormatsBeta to "◼	Make Formats for ConTeXt Beta (Mk IV)"
+set lMakeFormatsCurrent to "◼	Make Formats for ConTeXt Current (Mk IV)"
+set lListFontsAll to "◼	List All Available Fonts"
+set lManualSynCheck to "◼◼	Syntax Check"
+set lPurge to "◼◼	Purge (Ctx Script)"
+set lPurgeall to "◼◼	Purge All (Ctx Script)"
+set lTrashPdf to "◼◼	Trash Generated PDF Files"
 
 
 # Bash related
@@ -510,8 +509,8 @@ if showList then
 		set showPrevPrFile to " (" & quoted form of prevPrFileNameTail & ")"
 		
 	end if
-	set lUnregPrFile to " \t▶\tUnregister Product File" & showPrFile
-	set lReregPrFile to " \t▶\tRe-Register Previous Product File" & showPrevPrFile
+	set lUnregPrFile to " 	▶	Unregister Product File" & showPrFile
+	set lReregPrFile to " 	▶	Re-Register Previous Product File" & showPrevPrFile
 	
 	tell application "System Events"
 		activate
@@ -619,6 +618,7 @@ if showList then
 				"PDFpenPro"} ¬
 				with title "Choose PDF Viewer" OK button name "OK" cancel button name "Cancel" default items pdfViewerList multiple selections allowed no empty selection allowed no
 			set pdfViewerList of theDefaults to pdfViewerList
+			if pdfViewerList is false then error number -128
 			my setPdfViewer()
 		end if
 		
@@ -834,7 +834,13 @@ set typesetCmd to notificationStart ¬
 	& pdfOpen ¬
 	& TMExclude
 
-set autoCheckCmd to "cd " & quoted form of fileNameHead & " && " & cSourceCtx & " && { printf \"\n\n---\n\nSyntax checker says:\n\n\" ; " & checkCmd & space & quoted form of fileNameTail & " ; } >> " & quoted form of fileNameRoot & ".log"
+set autoCheckCmd to "cd " & quoted form of fileNameHead & " && " & cSourceCtx & " && { printf \"
+
+---
+
+Syntax checker says:
+
+\" ; " & checkCmd & space & quoted form of fileNameTail & " ; } >> " & quoted form of fileNameRoot & ".log"
 
 set logViewCmd to "cd " & quoted form of fileNameHead & " && open -a  " & logViewer & space & quoted form of fileNameRoot & ".log"
 
@@ -1076,7 +1082,10 @@ on testPaths()
 			set foundSetuptex to do shell script "mdfind -name 'setuptex' | grep  '/tex/setuptex$' ; exit 0"
 			if foundSetuptex is "" then
 				# In case user has disabled Spotlight or file is out of search scope of Spotlight
-				display alert "Deep Search Needed" message "The first search run with Spotlight didn’t yield any results. Now searching with ‘find’ in Home, /Users/Shared, /Applications, /opt, /usr/local and /usr/share. \n\t\t\t\t\tThis may take a few seconds.\n\t\t\t\t\t\n\t\t\t\t\tPress OK to start deep search." buttons {"Cancel", "OK"} default button "OK" cancel button "Cancel"
+				display alert "Deep Search Needed" message "The first search run with Spotlight didn’t yield any results. Now searching with ‘find’ in Home, /Users/Shared, /Applications, /opt, /usr/local and /usr/share. 
+					This may take a few seconds.
+					
+					Press OK to start deep search." buttons {"Cancel", "OK"} default button "OK" cancel button "Cancel"
 				set foundSetuptex to do shell script "find $HOME /Users/Shared /Applications /opt /usr/local /usr/share -name 'setuptex' -maxdepth 6 | grep  '/tex/setuptex$' ; exit 0"
 				-- Is the depth sufficient for nested install locations in ~/Library/ ?
 			end if
@@ -1436,3 +1445,6 @@ on modifierKeyTest()
 	
 	return keyDown
 end modifierKeyTest
+
+
+# üè (encoding test chars)
