@@ -403,7 +403,7 @@ set lReregPrFile to ""
 set lTerminal to "▷	Run Typesetting in Terminal  ⌥⇧"
 set lTerminalNew to " 	▷	New Terminal Window for Each Run"
 set lPdfViewerAuto to "▷	Do not Auto-launch PDF Viewer  ⇧"
-set lPdfViewerChange to "	▶	Set PDF Viewer →"
+set lPdfViewerChange to "	▷	Set PDF Viewer →"
 set lTerminalBack to "▷	Keep Terminal Windows in Background"
 set lLogViewer to "▷	View Error Logs in Current Text Editor"
 set lAutoSynCheck to "▷	Automatic Syntax Check on Error Off"
@@ -1284,7 +1284,7 @@ on _trashPdf()
 				set pdfTrashed to pdfTrashed & ", " & i as text
 			end repeat
 		end tell
-		-- TODO: At time of writing the above tell block was painfully slow. If this doesn’t improve stay with System Events and use ‘delete’ (which deletes the files).
+		-- TODO: At time of writing the above tell block was painfully slow. If this doesn’t improve, stay with System Events and use ‘delete’ (which deletes the files).
 		-- Using ‘delete’ in the Finder doesn’t help, since it seems to be just an alias for ‘move to trash’.
 		set pdfTrashed to (text items 3 through -1 of pdfTrashed) as text
 		display notification pdfTrashed with title ((count of pdfSelection) as text) & space & "PDFs trashed"
