@@ -360,9 +360,6 @@ end if
 
 # Misc
 
-property NSRegularExpressionSearch : a reference to 1024
-property NSString : a reference to current application's NSString
-
 set currentEditorFile to ""
 set fileName to ""
 set isFromFinder to false
@@ -1196,8 +1193,8 @@ on getVersionInfo()
 			set theFind to {"(ConTeXt):\\s*", "\\r(LuaTeX):\\s*"}
 			set theReplace to {"$1 ", "; $1 "}
 			repeat with i from 1 to number of items in theFind
-				set theText to (NSString's stringWithString:versionString)
-				set versionString to (theText's stringByReplacingOccurrencesOfString:(item i of theFind) withString:(item i of theReplace) options:NSRegularExpressionSearch range:{0, theText's |length|()}) as text
+				set theText to (current application's NSString's stringWithString:versionString)
+				set versionString to (theText's stringByReplacingOccurrencesOfString:(item i of theFind) withString:(item i of theReplace) options:(current application's NSRegularExpressionSearch) range:{0, theText's |length|()}) as text
 			end repeat
 			set the clipboard to versionString
 		end if
