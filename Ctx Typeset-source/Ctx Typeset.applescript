@@ -21,7 +21,7 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 
-
+use AppleScript version "2.4" -- Yosemite (10.10) or later
 use framework "Foundation"
 use scripting additions
 
