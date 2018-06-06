@@ -28,7 +28,7 @@ use scripting additions
 
 set theDefaults to current application's NSUserDefaults's alloc()'s initWithSuiteName:"net.dflect.CtxTypesetTool"
 
-theDefaults's registerDefaults:{ctxBeta:"", ctxCurrent:"", mainList:"", myCtx:"", useJit:false, prMode:false, pdfViewer:"com.apple.Preview", pdfViewerList:"Preview", pdfViewerLaunch:true, syncTex:false, terminalMode:false, logViewerNormal:"Console", logViewerFinder:"Console", autoSyntaxCheck:true, terminalWinRecycle:true, terminalWinForeground:true, enableNotifications:true, enableSound:true, enableTMexclude:true, backupDir:"", backUpToSameLocation:false} ¬
+theDefaults's registerDefaults:{ctxBeta:"", ctxCurrent:"", mainList:"", myCtx:"", useJit:false, prMode:false, pdfViewer:"com.apple.Preview", pdfViewerList:"Preview", pdfViewerLaunch:true, syncTex:false, terminalMode:false, logViewerNormal:"Console", logViewerFinder:"Console", autoSyntaxCheck:true, terminalWinRecycle:true, terminalWinForeground:true, enableNotifications:true, enableSound:true, enableTMexclude:true, backupDir:"", backUpToSameLocation:false, prFile:"", prFileNameTail:"", prevPrFile:"", prevPrFileNameTail:"", prFileFolder:""} ¬
 	
 # The old globals
 global fileName, fileNameHead, fileNameTail, fileNameRoot, parentFolder, isFromFinder, isFromBBEdit, targetApp, currentEditorFile, showList, dirNameCtx, bakName, ctxVersiondate, makeNewBak, cSourceCtx, tsModeSwap, previousApp, keyDown
@@ -63,6 +63,12 @@ set enableSound to enableSound of theDefaults as boolean
 set enableTMexclude to enableTMexclude of theDefaults as boolean
 set backupDir to backupDir of theDefaults as text
 set backUpToSameLocation to backUpToSameLocation of theDefaults as boolean
+
+set prFile to prFile of theDefaults as text
+set prFileNameTail to prFileNameTail of theDefaults as text
+set prevPrFile to prevPrFile of theDefaults as text
+set prevPrFileNameTail to prevPrFileNameTail of theDefaults as text
+set prFileFolder to prFileFolder of theDefaults as text # TODO: make sure if we need this in the defaults
 
 
 ################################################################################
@@ -384,11 +390,6 @@ set pdfViewerLaunchSwap to false
 global currentFinderFile, prFile, prFileFolder, prFileNameTail, prevPrFile, prevPrFileNameTail, finderSel, runCount, notSuitable
 
 set currentFinderFile to ""
-set prFile to ""
-set prFileFolder to ""
-set prFileNameTail to ""
-set prevPrFile to ""
-set prevPrFileNameTail to ""
 set finderSel to ""
 set runCount to 0
 set notSuitable to "[→ No suitable path here. Let me search myself… →]"
@@ -1027,6 +1028,7 @@ on regPrFile()
 	set prevPrFileNameTail to text item -1 of prevPrFile
 	set AppleScript's text item delimiters to saveTID
 	display notification "ƒ " & prFileFolder with title "Product file registered" subtitle prFileNameTail
+	setPrFileDefaults()
 	tell application previousApp to activate
 	return prFile
 end regPrFile
@@ -1040,6 +1042,7 @@ on unregPrFile()
 	set prevPrFileNameTail to text item -1 of prevPrFile
 	set AppleScript's text item delimiters to saveTID
 	display notification "Previous product file: " & prevPrFileNameTail with title "Product file unregistered" subtitle prFileNameTail
+	setPrFileDefaults()
 	return
 end unregPrFile
 
@@ -1054,9 +1057,18 @@ on reregPrFile()
 	set prFileFolder to text item -2 of prFile
 	set prevPrFileNameTail to text item -1 of prevPrFile
 	set AppleScript's text item delimiters to saveTID
+	setPrFileDefaults()
 	display notification "ƒ " & prFileFolder with title "Product file re-registered" subtitle prFileNameTail
 	return
 end reregPrFile
+
+on setPrFileDefaults()
+	set prFile of theDefaults to prFile
+	set prFileNameTail of theDefaults to prFileNameTail
+	set prevPrFile of theDefaults to prevPrFile
+	set prevPrFileNameTail of theDefaults to prevPrFileNameTail
+	set prFileFolder of theDefaults to prFileFolder
+end setPrFileDefaults
 
 on urlToPOSIXPath(theURL)
 	set the urlString to current application's NSString's stringWithString:theURL
