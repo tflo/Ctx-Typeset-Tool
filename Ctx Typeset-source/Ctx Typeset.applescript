@@ -614,8 +614,8 @@ if showList then
 				"Adobe Reader", ¬
 				"PDFpenPro"} ¬
 				with title "Choose PDF Viewer" OK button name "OK" cancel button name "Cancel" default items pdfViewerList multiple selections allowed no empty selection allowed no
-			set pdfViewerList of theDefaults to pdfViewerList
 			if pdfViewerList is false then error number -128
+			set pdfViewerList of theDefaults to pdfViewerList
 			my setPdfViewer()
 		end if
 		
