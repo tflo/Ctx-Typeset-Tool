@@ -150,11 +150,12 @@ set bakComprLevel to 2
 #
 # Preferred pdf viewer to auto-launch
 #
-# Acceptable values:
+# Selectable values (from the GUI):
 # "net.sourceforge.skim-app.skim"
 # "com.apple.Preview"
 # "com.adobe.Acrobat.Pro"
 # "com.Adobe.Reader"
+# "com.readdle.PDFExpert-Mac"
 # "com.smileonmymac.PDFpenPro"
 #
 ################################################################################
@@ -414,7 +415,8 @@ set lSynctex to "▷	Enforce SyncTeX"
 set lTools to "Tools →"
 set lHelp to "Help"
 
-set pdfViewerInventory to {{"Skim", "net.sourceforge.skim-app.skim"}, {"Preview", "com.apple.Preview"}, {"Adobe Acrobat Pro", "com.adobe.Acrobat.Pro"}, {"Adobe Reader", "com.Adobe.Reader"}, {"PDFpenPro", "com.smileonmymac.PDFpenPro"}}
+# The order determines the order of the GUI list
+set pdfViewerInventory to {{"Preview", "com.apple.Preview"}, {"Skim", "net.sourceforge.skim-app.skim"}, {"PDF Expert", "com.readdle.PDFExpert-Mac"}, {"PDFpenPro", "com.smileonmymac.PDFpenPro"}, {"Adobe Reader", "com.Adobe.Reader"}, {"Adobe Acrobat Pro", "com.adobe.Acrobat.Pro"}}
 
 
 # Tools list
@@ -610,12 +612,11 @@ if showList then
 		if mainList contains lHelp then openDescription() of me
 		
 		if mainList contains lPdfViewerChange then
-			set pdfViewerList to choose from list {¬
-				"Preview", ¬
-				"Skim", ¬
-				"Adobe Acrobat Pro", ¬
-				"Adobe Reader", ¬
-				"PDFpenPro"} ¬
+			set pdfViewerCollection to {}
+			repeat with i in pdfViewerInventory
+				set end of pdfViewerCollection to item 1 of i
+			end repeat
+			set pdfViewerList to choose from list pdfViewerCollection ¬
 				with title "Choose PDF Viewer" OK button name "OK" cancel button name "Cancel" default items pdfViewerList multiple selections allowed no empty selection allowed no
 			if pdfViewerList is false then error number -128
 			set pdfViewerList of theDefaults to pdfViewerList
