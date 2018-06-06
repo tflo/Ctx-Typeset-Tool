@@ -312,7 +312,7 @@ Dont’t Exclude generated PDF from Backup
 	*Note:* ConTeXt itself writes the output PDF “in place”, that means if you have
 	excluded the PDF once from backup the attribute will *not* go away by simply
 	disabling the exclusion and typesetting again. After disabling the exclusion you
-	have to trash the formerly genarated PDF in order to get a TM-included file
+	have to trash the formerly generated PDF in order to get a TM-included file
 	again. Or, alternatively, execute 
 	`xattr -d com.apple.metadata:com_apple_backup_excludeItem <my-file.pdf>`
 	[^automator]
