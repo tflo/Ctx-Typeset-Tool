@@ -84,6 +84,10 @@ set checkCmd to "mtxrun --script check"
 # The sound file for the completion sound
 set finishSound to "/System/Library/Sounds/Submarine.aiff"
 #
+# The sound file for the alert sound
+set alertSound to "/System/Library/Sounds/Basso.aiff"
+# Note: the 'beep' command somehow doesn't work
+#
 # Compression level for ConTeXt installation backups
 set bakComprLevel to 2
 #
@@ -256,7 +260,7 @@ set bakComprLevel to 2
 #
 # enableSound [true]
 #
-# If a completion sound should be played after successful typesetting
+# If a completion sound should be played after successful typesetting, and an alert sound in case of failure.
 #
 ################################################################################
 #
@@ -269,6 +273,15 @@ set bakComprLevel to 2
 #
 # Other examples: "/System/Library/Sounds/Glass.aiff",
 # "/System/Library/Sounds/Blow.aiff"
+#
+################################################################################
+#
+# alertSound ["/System/Library/Sounds/Basso.aiff"]
+#
+# The sound file to be played as alert (failure) sound.
+#
+# This cannot be set in the GUI! If you want to change it, you have to set it at
+# the beginning of this section.
 #
 ################################################################################
 #
@@ -367,7 +380,6 @@ set isFromBBEdit to false
 set runModeSwap to false
 set tsModeSwap to false
 set pdfViewerLaunchSwap to false
-set soundNumber to random number from 1 to 12
 
 global currentFinderFile, prFile, prFileFolder, prFileNameTail, prevPrFile, prevPrFileNameTail, finderSel, runCount, notSuitable
 
@@ -738,11 +750,13 @@ else
 	set TMExclude to " && xattr -w" & space & xattrTMExclusion & space & quoted form of fileNameRoot & ".tuc" & space & quoted form of fileNameRoot & ".log && [ ! -f" & space & quoted form of fileNameRoot & ".synctex.gz ] || xattr -w" & space & xattrTMExclusion & space & quoted form of fileNameRoot & ".synctex.gz"
 end if
 
-# Completion sound 
+# Sounds
 if enableSound then
-	set makeNoise to " && afplay " & quoted form of finishSound
+	set makeFinishNoise to " && afplay " & quoted form of finishSound
+	set makeAlertNoise to "afplay " & quoted form of alertSound
 else
-	set makeNoise to ""
+	set makeFinishNoise to ""
+	set makeAlertNoise to ""
 end if
 
 # Case-specific log viewer
@@ -826,7 +840,7 @@ set typesetCmd to notificationStart ¬
 	& optSync ¬
 	& optConsole ¬
 	& quoted form of fileNameTail ¬
-	& makeNoise ¬
+	& makeFinishNoise ¬
 	& notificationEnd ¬
 	& pdfOpen ¬
 	& TMExclude
@@ -856,11 +870,11 @@ if (not terminalMode and not runModeSwap) or (terminalMode and runModeSwap) then
 		# Disable "Check for file changes" in Skim's prefs
 		refreshSkim()
 	on error
+		do shell script makeAlertNoise
 		try
 			do shell script logViewCmd
 		end try
 		if autoSyntaxCheck then do shell script autoCheckCmd
-		errorSound(soundNumber)
 		--error number -128
 		return
 	end try
@@ -1400,20 +1414,6 @@ end doRound
 --		say currentApp
 --	end tell
 --end checkFront
-
-on errorSound(soundNumber)
-	if soundNumber is less than 3 then
-		say "oh my god!"
-	else if soundNumber is greater than 2 and soundNumber is less than 6 then
-		say "shit!"
-	else if soundNumber is greater than 5 and soundNumber is less than 10 then
-		say "holy shit!"
-	else if soundNumber is greater than 9 and soundNumber is less than 12 then
-		say "what the fuck?"
-	else if soundNumber is 12 then
-		say "shit! come on!"
-	end if
-end errorSound
 
 on refreshSkim()
 	if pdfViewer is "net.sourceforge.skim-app.skim" then
