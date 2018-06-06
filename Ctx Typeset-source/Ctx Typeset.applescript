@@ -362,16 +362,7 @@ set bakComprLevel to 2
 if ((path to me) as text) ends with ".applescript" then
 	# For the source file
 	set p7z to (quoted form of POSIX path of ("/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Typeset Tool/Ctx Typeset.scptd/Contents/Resources/bin/7zr")) as text
-	set descrFile to POSIX file "/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Typeset Tool/Ctx Typeset Tool.scptd/Contents/Resources/Manual/Manual.html" as text
-else
-	set p7z to (quoted form of POSIX path of (path to resource "bin/7zr")) as text
-	set descrFile to (path to resource "Manual/Manual.html") as text
-end if
-
-if ((path to me) as text) ends with ".applescript" then
-	# For the source file
-	set p7z to (quoted form of POSIX path of ("/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Typeset Tool/Ctx Typeset.scptd/Contents/Resources/bin/7zr")) as text
-	set descrFile to POSIX file "/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Typeset Tool/Ctx Typeset Tool.scptd/Contents/Resources/Manual/Manual.html" as text
+	set descrFile to POSIX file "/Users/tom/Documents/Scripts/AppleScript/Ctx Typeset/Ctx Typeset Tool/Manual.html" as text
 else
 	set p7z to (quoted form of POSIX path of (path to resource "bin/7zr")) as text
 	set descrFile to (path to resource "Manual/Manual.html") as text
