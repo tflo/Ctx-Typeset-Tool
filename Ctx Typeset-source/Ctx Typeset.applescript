@@ -37,7 +37,7 @@ global fileName, fileNameHead, fileNameTail, fileNameRoot, parentFolder, isFromF
 global ctxBeta, ctxCurrent, useJit, prMode, pdfViewer, pdfViewerLaunch, syncTex, terminalMode, logViewerNormal, logViewerFinder, autoSyntaxCheck, checkCmd, terminalWinRecycle, terminalWinForeground, enableNotifications, finishSound, enableSound, enableTMexclude, backupDir, backUpToSameLocation, bakComprLevel, p7z, descrFile
 
 # Meta
-global theDefaults, mainList, pdfViewerList, toolsList
+global theDefaults, mainList, pdfViewerList
 
 
 set ctxBeta to ctxBeta of theDefaults as text
@@ -391,7 +391,6 @@ tell application "System Events" to set previousApp to name of first process whe
 # Settings list 
 
 set showList to false
---set toolsList to ""
 
 global lCtx, lJit, lprMode, lRegPrFile, lUnregPrFile, lReregPrFile, lTerminal, lTerminalNew, lPdfViewerAuto, lPdfViewerChange, lTerminalBack, lLogViewer, lAutoSynCheck, lNotifications, lSound, lTM, lSynctex, lTools, lHelp, pdfViewerInventory
 
