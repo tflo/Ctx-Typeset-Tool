@@ -28,7 +28,7 @@ use scripting additions
 
 set theDefaults to current application's NSUserDefaults's alloc()'s initWithSuiteName:"net.dflect.CtxTypesetTool"
 
-theDefaults's registerDefaults:{ctxBeta:"", ctxCurrent:"", mainList:"", myCtx:"", useJit:false, prMode:false, pdfViewer:"com.apple.Preview", pdfViewerList:"Preview", pdfViewerLaunch:true, syncTex:false, terminalMode:false, logViewerNormal:"Console", logViewerFinder:"Console", autoSyntaxCheck:true, terminalWinRecycle:true, terminalWinForeground:true, enableNotifications:true, enableSound:true, enableTMexclude:true, backupDir:"", backUpToSameLocation:false, prFile:"", prFileNameTail:"", prevPrFile:"", prevPrFileNameTail:"", prFileFolder:""} ¬
+theDefaults's registerDefaults:{ctxBeta:"", ctxCurrent:"", mainList:"", myCtx:"", useJit:false, prMode:false, pdfViewer:"com.apple.Preview", pdfViewerList:"Preview", pdfViewerLaunch:true, syncTex:false, terminalMode:false, logViewerNormal:"Console", logViewerFinder:"Console", autoSyntaxCheck:true, terminalWinRecycle:true, terminalWinForeground:true, enableNotifications:true, enableSound:true, enableTMexclude:true, backupDir:"", backUpToSameLocation:false, prFile:"", prFileNameTail:"", prevPrFile:"", prevPrFileNameTail:"", prFileFolder:"", runCount:0} ¬
 	
 # The old globals
 global fileName, fileNameHead, fileNameTail, fileNameRoot, parentFolder, isFromFinder, isFromBBEdit, targetApp, currentEditorFile, showList, dirNameCtx, bakName, ctxVersiondate, makeNewBak, cSourceCtx, tsModeSwap, previousApp, keyDown
@@ -69,6 +69,7 @@ set prFileNameTail to prFileNameTail of theDefaults as text
 set prevPrFile to prevPrFile of theDefaults as text
 set prevPrFileNameTail to prevPrFileNameTail of theDefaults as text
 set prFileFolder to prFileFolder of theDefaults as text # TODO: make sure if we need this in the defaults
+set runCount to runCount of theDefaults as integer
 
 
 ################################################################################
@@ -391,7 +392,6 @@ global currentFinderFile, prFile, prFileFolder, prFileNameTail, prevPrFile, prev
 
 set currentFinderFile to ""
 set finderSel to ""
-set runCount to 0
 set notSuitable to "[→ No suitable path here. Let me search myself… →]"
 
 # Get frontmost app at script launch time
@@ -884,6 +884,7 @@ else
 end if
 set runCount to (runCount + 1)
 if (runCount = 3) or (runCount = 9) or (runCount = 17) then firstTimeMessage()
+set runCount of theDefaults to runCount
 
 
 ################################################################################
