@@ -4,10 +4,10 @@
 # Web page: <http://dflect.net/context-typeset-tool/>
 # Author: Thomas Floeren <ecdltf@mac.com>
 # Created: 2013
-# Last modified: 2017-05-24
+# Last modified: 2018-06-06
 # Version: 2.0.0b1 (68)
 #
-# Copyright © 2013-2017 Thomas Floeren
+# Copyright © 2013-2018 Thomas Floeren
 # 
 # Permission to use, copy, modify, and/or distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -78,7 +78,7 @@ set prFileFolder to prFileFolder of theDefaults as text # TODO: make sure if we 
 # Usually there is no need to change anything here!
 # You can set most options in The Options Window (main window) by holding down the Control key when launching the script.
 #
-# The only variables that are not available through the GUI are the following;
+# The only variables that may be of interest for the user and are not available through the GUI are the following five;
 # you can set them here.
 #
 # Run delay
@@ -97,8 +97,8 @@ set alertSound to "/System/Library/Sounds/Basso.aiff"
 # Compression level for ConTeXt installation backups
 set bakComprLevel to 2
 #
-#
-# The value in brackets show the default value used by the program:
+# You find the explanations for these and the other settings in the comments below:
+# [The value in brackets show the default value used by the program.]
 #
 (*
 ################################################################################
@@ -117,7 +117,7 @@ set bakComprLevel to 2
 #
 # The launch (run) delay
 #
-# If you are launching the script in a way that doesn’t allow the use of certain
+# If you are launching the script in a way that doesn’t allow the use of certain 
 # modifier keys – e.g. launching it from the Script menu in the menu bar doesn’t
 # work with the option or shift key – you can set a longer delay that allows you
 # to press a modifier key comfortably after script launch, e.g. 1 or 1.5 sec.
@@ -332,7 +332,7 @@ set bakComprLevel to 2
 # Acceptable values:
 #
 # 0: No compression (tar archive)
-# 1: gzipped archive (tar.gz), approx. 45%
+# 1: gzipped archive (tar.gz), approx. 50%
 # 2: lzma compressed archive (tar.xz), approx. 30%
 #
 # All methods are entirely Mac metadata safe (tags, comments, xattr)
