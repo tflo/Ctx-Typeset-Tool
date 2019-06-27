@@ -4,7 +4,7 @@
 # Web page: <http://dflect.net/context-typeset-tool/>
 # Author: Thomas Floeren <ecdltf@mac.com>
 # Created: 2013
-# Last modified: 2018-06-06
+# Last modified: 2018-06-19
 # Version: 2.0.0b1 (68)
 #
 # Copyright © 2013-2018 Thomas Floeren

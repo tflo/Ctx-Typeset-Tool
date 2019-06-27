@@ -6,6 +6,10 @@
 </head>
 <body>
 <dl>
+	<dt>2.0.0b (68) (2018-06-19)</dt>
+	<dd>The script now stores user preferences, remembered product files, file paths etc. in NSUserDefaults (i.e. in a plist file in ~/Library/Preferences). This allows for proper code signing and makes the preferences more robust. (You can now also modify and recompile the script without loosing any setting or path.)</dd>
+	<dd>Removed the spoken “warnings” when the typesetting failed. (I couldn’t stand them anymore ;)</dd>
+	<dd>Repaired some minor glitches in the UI.</dd>
 	<dt>1.3.0 (67) (2017-05-24)</dt>
 	<dd>This release is mainly to move the script out of Beta, since it is working reliably for me for months. Very minor changes. Some major changes coming soon!</dd>
 	<dt>1.3.0b2 (66) (2016-09-22)</dt>
@@ -14,7 +18,7 @@
 	<dd>Rewritten all code formerly related to <i>ASObjC Runner</i>.</dd>
 	<dd>Removed <i>terminal-notifier</i> -> No more notifications on OS X 10.8.</dd>
 	<dd>Changed <i>Trash Generated PDF Files</i> action: it now shows a list where you can select the PDFs to trash.</dd>
-	<dd>Updated 7zr to ver 16.02</dd>
+	<dd>Updated 7zr to version 16.02</dd>
 	<dd>Removed the Python dependency.</dd>
 	<dd>Fixed some path and encoding problems for mtxrun and texutil.</dd>
 	<dt>1.2.5 (64) (2016-03-22)</dt>
