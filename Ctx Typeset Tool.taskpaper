@@ -1,0 +1,29 @@
+TODO:
+	- Synctex with Skim seems to be broken since Skim 1.4.30 (104)
+	- High Sierra: Terminal gives sometimes a bogus window count => script fails if no Terminal window is open.  @flag
+		Or is it the the "do script" that has opened a window?
+	- Save prefs in User Defaults @done(2018-09-16)
+	- 'tmutil add exclusion' instead of the hardcoded xattr @onhold
+		Failed: see comments in the script.
+	- Make Skim refresh working also when typesetting in Terminal.
+		Possible, easy solution: Just run an AS – if Skim is running – and refresh the current document (which always should be the latest typeset document).
+	- Convert manual to AsciiDoc @maybe
+		- Find out if it is MMD or MD
+		- Convert with pandoc to adoc
+		- Clean up syntax
+		- Make HTML
+	- Add '.nosync' to PDFs (+ GUI option) @later @maybe
+		Personally I solved this problem with my "Compilation Folder" concept in TeX projects.
+	- Add progress indicator steps @maybe
+		quiver:///notes/2FCA176C-0A43-4C15-8A9A-A56670EAE047
+	- Remove or simplify the stupid triangle semantics in the windows (and in the manual!) @canceled
+		After reading the manual: actually they aren't stupid at all.
+
+Unclear/older Notes:
+	- Do automatic syntax check always on file open in editor (not prd file)
+		Schon versucht, aber aus irgendeinem Grund klappt nicht. See Notes.
+	- Redirect command output to variable and grep the variable for 'unknown', 'missing'. @maybe @onhold
+		This should reveal problems like missing fonts, images, …
+		[2019-06-30] What the heck did I mean with this?
+	- Add version info to updated folder!
+		What is this?
