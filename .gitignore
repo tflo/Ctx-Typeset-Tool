@@ -1,0 +1,14 @@
+*.dmg
+*.zip
+*.scpt
+*.plist
+*.rtf
+*.scptd
+*.workflow
+*.alfredworkflow
+*.kmmacros
+Manual.HTML
+_Older
+Helpers
+Distributed Versions
+*.link
