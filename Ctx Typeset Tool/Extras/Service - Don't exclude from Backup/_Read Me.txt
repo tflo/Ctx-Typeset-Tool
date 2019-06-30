@@ -1,0 +1,4 @@
+If you have set the Ctx Typeset script to exclude the generated PDF from Time
+Machine backup you can use this Service to reenable backup for that PDF.
+
+See also script description.
