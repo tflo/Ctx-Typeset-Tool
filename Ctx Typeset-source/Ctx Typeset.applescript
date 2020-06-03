@@ -1320,7 +1320,7 @@ end listFontsAll
 
 on updCtx(ctxToUpdate)
 	set ctxVersiondate to do shell script "source " & quoted form of ctxToUpdate & " && " & cVersionCtxDate
-	if ctxVersiondate does not start with "201" or ctxVersiondate does not contain "T" then
+	if ctxVersiondate does not start with "20" or ctxVersiondate does not contain "T" then
 		tell application "System Events" to display alert "Could not get date of installed ConTeXt."
 		error number -128
 	end if
