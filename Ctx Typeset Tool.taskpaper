@@ -16,8 +16,19 @@ TODO:
 		Personally I solved this problem with my "Compilation Folder" concept in TeX projects.
 	- Add progress indicator steps @maybe
 		quiver:///notes/2FCA176C-0A43-4C15-8A9A-A56670EAE047
+	- Better function to get POSIX path from URL:
+	- Change "Current" to "Stable" or "Slot 1" or so
+		The hardcoded name is ugly when I have my "stable" beta in the slot
+	- Make open the new error log instead of the regular log file
 	- Remove or simplify the stupid triangle semantics in the windows (and in the manual!) @canceled
 		After reading the manual: actually they aren't stupid at all.
+				if fileUrlOfFrontWindow ≠ missing value and fileUrlOfFrontWindow ≠ "file:///Irrelevent" then
+					set posixPath to (current application's class "NSURL"'s URLWithString:fileUrlOfFrontWindow)'s |path|() as text
+					return posixPath
+				else
+					return "NULL"
+				end if
+				# https://forum.keyboardmaestro.com/t/acquire-posix-path-of-file-associated-with-front-window-of-front-application/7093
 
 Unclear/older Notes:
 	- Do automatic syntax check always on file open in editor (not prd file)
